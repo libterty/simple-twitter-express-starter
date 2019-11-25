@@ -27,19 +27,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
 app.use(flash());
+// use helpers.getUser(req) to replace req.user
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages');
   res.locals.error_messages = req.flash('error_messages');
-  res.locals.user = req.user;
+  res.locals.user = helpers.getUser(req);
   next();
 });
 app.use(methodOverride('_method'));
 H.registerHelpers(Handlebars);
 
-// use helpers.getUser(req) to replace req.user
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
 
-app.get('/', (req, res) => res.send('Hello World!'));
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+require('./routes')(app);
 
 module.exports = app;
