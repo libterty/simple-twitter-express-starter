@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  User.associate = function (models) {
+  User.associate = function(models) {
     User.hasMany(models.Tweet);
     User.hasMany(models.Reply);
     User.hasMany(models.Like);
