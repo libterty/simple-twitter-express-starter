@@ -58,6 +58,12 @@ const userController = {
         return res.redirect('/signin');
       });
     });
+  },
+
+  logout: (req, res) => {
+    req.flash('success_messages', '登出成功！');
+    req.logout();
+    res.redirect('/signin');
   }
 };
 

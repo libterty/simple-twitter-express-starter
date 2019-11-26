@@ -57,8 +57,8 @@ describe('# auth request', () => {
           .type('form')
           .send({
             _method: 'post',
-            name: `test2`,
-            email: `test1@example.com`,
+            name: `test3`,
+            email: `test3@example.com`,
             password: '123',
             passwordCheck: '123'
           })
@@ -76,10 +76,10 @@ describe('# auth request', () => {
           .type('form')
           .send({
             _method: 'post',
-            name: `test2`,
-            email: `test1@example.com`,
+            name: `test3`,
+            email: `test3@example.com`,
             password: '12345678',
-            passwordCheck: '123'
+            passwordCheck: '124231423'
           })
           .end(function(err, res) {
             if (err) return done(err);
@@ -107,6 +107,21 @@ describe('# auth request', () => {
             expect(res.type).to.eq('text/html');
             expect(res.redirects[0]).not.to.undefined;
             return done();
+          });
+      });
+    });
+  });
+
+  context('# logout', () => {
+    describe('sending logout request', () => {
+      it('should logout user', done => {
+        chai
+          .request(app)
+          .get('/logout')
+          .end(function(err, res) {
+            if (err) return done(err);
+            expect(res.type).to.eq('text/html');
+            expect(res.redirects[0]).not.to.undefined;
           });
       });
     });
