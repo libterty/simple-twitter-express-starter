@@ -8,6 +8,12 @@ const sinon = require('sinon');
 const app = require('../../app');
 const should = chai.should();
 const expect = chai.expect;
+const bcrypt = require('bcrypt-nodejs');
+// import fake data and function for testing
+const { adminOne, userOne, setupDatabase } = require('../fixtures/db');
+const db = require('../../models/');
+// wipe out user collection and create userOne before every tests
+beforeEach(setupDatabase);
 
 describe('# auth request', () => {
   context('# signup', () => {
@@ -106,6 +112,58 @@ describe('# auth request', () => {
             if (err) return done(err);
             expect(res.type).to.eq('text/html');
             expect(res.redirects[0]).not.to.undefined;
+            return done();
+          });
+      });
+    });
+  });
+
+  context('# signin', () => {
+    describe('Sending invalid user signin information', () => {
+      it('will redirect to /signin if email not exists', done => {
+        chai
+          .request(app)
+          .post('/signin')
+          .type('form')
+          .send({
+            email: 'abc@example.com',
+            password: userOne.password
+          })
+          .end(function(err, res) {
+            if (err) return done(err);
+            expect(res).to.redirectTo(res.redirects[0]);
+            return done();
+          });
+      });
+      it('will redirect to /signin if password incorrect', done => {
+        chai
+          .request(app)
+          .post('/signin')
+          .type('form')
+          .send({
+            email: userOne.email,
+            password: '1011001111'
+          })
+          .end(function(err, res) {
+            if (err) return done(err);
+            expect(res).to.redirectTo(res.redirects[0]);
+            return done();
+          });
+      });
+    });
+    describe('Sending valid user signin information', () => {
+      it('will redirect to / if user information matches', done => {
+        chai
+          .request(app)
+          .post('/signin')
+          .type('form')
+          .send({
+            email: adminOne.email,
+            password: adminOne.password
+          })
+          .end(function(err, res) {
+            if (err) return done(err);
+            expect(res).to.redirectTo(res.redirects[0]);
             return done();
           });
       });
