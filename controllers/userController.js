@@ -58,6 +58,13 @@ const userController = {
         return res.redirect('/signin');
       });
     });
+  },
+  signInPage: (req, res) => {
+    return res.render('signin');
+  },
+  signIn: async (req, res) => {
+    req.flash('success_messages', '成功登入!');
+    res.redirect('/');
   }
 };
 
