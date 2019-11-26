@@ -15,6 +15,8 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
+const passport = require('./config/passport');
+
 app.engine(
   'handlebars',
   handlebars({
@@ -26,6 +28,10 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
+// setup passport
+app.use(passport.initialize());
+app.use(passport.session());
+// setup flash message
 app.use(flash());
 // use helpers.getUser(req) to replace req.user
 app.use((req, res, next) => {
