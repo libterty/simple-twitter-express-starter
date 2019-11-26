@@ -1,9 +1,24 @@
 version: 2
+general:
+  branches:
+    only:
+      - master
+      - dev
+
 jobs:
   build:
     docker:
       - image: circleci/node:10.16.3
-      - image: circleci/postgres:10.1
+        environment:
+          NODE_ENV: test
+      - image: circleci/mysql:8.0.4
+        environment:
+          MYSQL_DATABASE: ac_twitter_workspace_test
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: 12345678
+          DATABASE_HOST: 127.0.0.1
+          DARABASE_PORT: 3306
+      # - image: circleci/postgres:10.1
     
     working_directory: ~/repo
 
@@ -20,20 +35,27 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # Test
-      - run: sudo apt-get update
-      - run: sudo apt install postgresql-client
+      - run:
+      # Our primary container isn't MYSQL so run a sleep command until it's ready.
+          name: Waiting for MySQL to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+      - run:
+          name: Install MySQL CLI; Import dummy data; run an example query
+          command: |
+            sudo apt-get install default-mysql-client
+            mysql -h 127.0.0.1 -u root -12345678 ac_twitter_workspace_test < sql-data/dummy.sql
+            mysql -h 127.0.0.1 -u root -12345678 --execute="SELECT * FROM ac_twitter_workspace_test.Users
 
-      - run: psql -U postgres -h localhost -p 5432 -c "CREATE USER root;"
-      - run: psql -U postgres -h localhost -p 5432 -c "ALTER USER root WITH SUPERUSER;"
-
-      - run: npm run db:create
-      - run: npm run db:migrate
+      - run: npx sequelize db:migrate
 
       - run: npm test
-
-    environment:
-      NODE_ENV: test
 
 workflows:
   version: 2
