@@ -14,7 +14,7 @@ const authenticated = (req, res, next) => {
 // TODO: root
 router.get('/', authenticated, (req, res) => res.send('root'));
 
-// user signIn, register
+// user signIn, register, logout
 router.get('/signup', userController.signUpPage);
 router.post('/signup', userController.signUp);
 router.get('/signin', userController.signInPage);
@@ -26,5 +26,6 @@ router.post(
   }),
   userController.signIn
 );
+router.get('/logout', userController.logout);
 
 module.exports = router;

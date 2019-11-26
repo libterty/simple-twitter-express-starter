@@ -180,6 +180,7 @@ describe('# auth request', () => {
             if (err) return done(err);
             expect(res.type).to.eq('text/html');
             expect(res.redirects[0]).not.to.undefined;
+            return done();
           });
       });
     });
