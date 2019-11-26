@@ -88,3 +88,10 @@ typings/
 
 # Ignore config.json
 config/config.json
+
+# Ingore code coverage
+coverage/
+
+# Ingore file upload
+temp/
+upload/
