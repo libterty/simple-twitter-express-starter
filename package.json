@@ -4,10 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development node app.js",
+    "start": "node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
-    "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000",
-    "dev-test": "cross-env NODE_ENV=test mocha test/*/auth.spec.js --exit --recursive --timeout 5000",
+    "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000 && codecov",
+    "dev-test": "cross-env NODE_ENV=test mocha test/*/auth.spec.js --exit --recursive --timeout 5000 && codecov",
     "test-migrate": "cross-env NODE_ENV=test npx sequelize db:migrate",
     "lint": "eslint --format table --fix ."
   },
@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "chai-http": "^4.3.0",
+    "codecov": "^3.6.1",
     "cross-env": "^6.0.3",
     "dotenv": "^8.2.0",
     "eslint": "^6.7.1",
