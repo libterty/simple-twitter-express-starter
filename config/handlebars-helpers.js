@@ -13,6 +13,6 @@ module.exports = {
     return a.length;
   },
   reduceLength: function(a) {
-    return a.slice(0, 50);
+    return a.substring(0, 50);
   }
 };

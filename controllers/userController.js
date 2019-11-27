@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt-nodejs');
 const db = require('../models');
 const User = db.User;
+const Tweet = db.Tweet;
 
 const userController = {
   // 登錄頁面VIEW
@@ -73,6 +74,24 @@ const userController = {
     req.flash('success_messages', '登出成功！');
     req.logout();
     res.redirect('/signin');
+  },
+
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id).then(user => {
+      if (req.params.id) {
+        Tweet.findAll().then(tweets => {
+          let userTweets = [];
+          tweets.map(tweet => {
+            if (tweet.dataValues.UserId === Number(req.params.id)) {
+              userTweets.push(tweet.dataValues);
+            }
+          });
+          // console.log('Current User', user);
+          console.log('userTweets', userTweets);
+          return res.render('dashboard', { user, userTweets });
+        });
+      }
+    });
   }
 };
 

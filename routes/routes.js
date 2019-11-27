@@ -2,17 +2,18 @@ const express = require('express');
 const router = express.Router();
 const passport = require('../config/passport');
 const userController = require('../controllers/userController.js');
+const helpers = require('../_helpers');
 
 // authentication function
 const authenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (helpers.ensureAuthenticated(req)) {
     return next();
   }
   res.redirect('/signin');
 };
 
 const authenticatedUser = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (helpers.ensureAuthenticated(req)) {
     if (req.user.id == req.params.id) {
       return next();
     }
@@ -23,7 +24,7 @@ const authenticatedUser = (req, res, next) => {
 };
 
 const authenticatedAdmin = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (helpers.ensureAuthenticated(req)) {
     if (req.user.isAdmin) {
       return next();
     }
@@ -48,5 +49,7 @@ router.post(
   userController.signIn
 );
 router.get('/logout', userController.logout);
+
+router.get('/users/:id/tweets', authenticated, userController.getUser);
 
 module.exports = router;
