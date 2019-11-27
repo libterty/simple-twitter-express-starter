@@ -26,7 +26,12 @@
                 </li>
             </ul>
             <br>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            {{#if (eq isCurrentUser true)}}
+            <button type="button" href="#" class="btn btn-primary">Edit Profile</button>
+            {{/if}}
+            {{#if (eq isCurrentUser false)}}
+            <button type="button" href="#" class="btn btn-primary">Following</button>
+            {{/if}}
         </div>
     </div>
     <div class="col-md-8">
@@ -39,16 +44,18 @@
                 <div class="col-md-8">
                     <div class="card-body outer-body">
                         <div class="card-body">
-                            <a href="#" class="card-link"><strong>{{../user.name}}</strong></a>
+                            <a href="/users/{{../user.id}}/tweets" class="card-link"><strong>{{../user.name}}</strong></a>
                             <a href="#" class="card-link"><small>{{moment this.createdAt}}</small></a>
                         </div>
                         <p class="card-text">{{this.description}}</p>
                         <div class="card-body">
                             <a href="#" class="card-link">
                                 <strong>Reply</strong>
+                                <small>(2)</small>
                             </a>
                             <a href="#" class="card-link">
                                 <strong>Like</strong>
+                                <small>(3)</small>
                             </a>
                         </div>
                     </div>

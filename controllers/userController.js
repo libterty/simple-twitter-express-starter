@@ -67,7 +67,9 @@ const userController = {
 
   signIn: async (req, res) => {
     req.flash('success_messages', '成功登入!');
-    res.redirect('/');
+    req.user.dataValues.isAdmin
+      ? res.redirect('/admin/tweets')
+      : res.redirect('/tweets');
   },
 
   logout: (req, res) => {
@@ -77,18 +79,30 @@ const userController = {
   },
 
   getUser: (req, res) => {
+    let isCurrentUser;
     return User.findByPk(req.params.id).then(user => {
       if (req.params.id) {
         Tweet.findAll().then(tweets => {
           let userTweets = [];
+          // filtering the equivalent user
           tweets.map(tweet => {
             if (tweet.dataValues.UserId === Number(req.params.id)) {
               userTweets.push(tweet.dataValues);
             }
           });
-          // console.log('Current User', user);
-          console.log('userTweets', userTweets);
-          return res.render('dashboard', { user, userTweets });
+          // check if is Current User
+          if (req.user) {
+            req.user.id === Number(req.params.id)
+              ? (isCurrentUser = true)
+              : (isCurrentUser = false);
+          }
+          // sort with Date
+          userTweets = userTweets.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+
+          return res.render('dashboard', { user, userTweets, isCurrentUser });
         });
       }
     });
