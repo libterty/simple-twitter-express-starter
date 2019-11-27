@@ -25,7 +25,7 @@ describe('# auth request', () => {
           .type('form')
           .send({
             _method: 'post',
-            name: `test1`,
+            name: `user1`,
             email: `${nanoid(5)}@example.com`,
             password: '12345678',
             passwordCheck: '12345678'
@@ -45,7 +45,7 @@ describe('# auth request', () => {
           .send({
             _method: 'post',
             name: `test2`,
-            email: `test1@example.com`,
+            email: `user1@example.com`,
             password: '12345678',
             passwordCheck: '12345678'
           })

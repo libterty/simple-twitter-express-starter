@@ -11,8 +11,29 @@ const authenticated = (req, res, next) => {
   res.redirect('/signin');
 };
 
+const authenticatedUser = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.id == req.params.id) {
+      return next();
+    }
+    req.flash('error_messages', 'Bad Request!');
+    return res.redirect(`/users/${req.user.id}/tweets`);
+  }
+  res.redirect('/signin');
+};
+
+const authenticatedAdmin = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    if (req.user.isAdmin) {
+      return next();
+    }
+    return res.redirect('/');
+  }
+  res.redirect('/signin');
+};
+
 // TODO: root
-router.get('/', authenticated, (req, res) => res.send('root'));
+router.get('/', authenticated, (req, res) => res.redirect(302, '/tweets'));
 
 // user signIn, register, logout
 router.get('/signup', userController.signUpPage);
