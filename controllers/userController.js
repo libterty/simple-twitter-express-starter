@@ -81,7 +81,7 @@ const userController = {
   getUser: (req, res) => {
     let isCurrentUser;
     return User.findByPk(req.params.id).then(user => {
-      if (req.params.id) {
+      if (user) {
         Tweet.findAll().then(tweets => {
           let userTweets = [];
           // filtering the equivalent user
@@ -105,6 +105,7 @@ const userController = {
           return res.render('dashboard', { user, userTweets, isCurrentUser });
         });
       }
+      return res.render('notFound');
     });
   }
 };
