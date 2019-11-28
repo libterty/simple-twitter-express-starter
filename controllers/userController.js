@@ -62,22 +62,22 @@ const userController = {
       });
     });
   },
-
+  // render 登入頁面
   signInPage: (req, res) => {
     return res.render('signin');
   },
-
+  // Post 登入功能
   signIn: (req, res) => {
     req.flash('success_messages', '成功登入!');
     req.user.isAdmin ? res.redirect('/admin/tweets') : res.redirect('/tweets');
   },
-
+  // Get 登出頁面
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！');
     req.logout();
     res.redirect('/signin');
   },
-
+  // Get /users/:id/tweets頁面
   getDashboard: (req, res) => {
     let isCurrentUser;
     return User.findByPk(req.params.id).then(user => {
@@ -109,13 +109,13 @@ const userController = {
       }
     });
   },
-
+  // Get /users/:id/edit頁面
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
       return user ? res.render('usersEdit', { user }) : res.render('notFound');
     });
   },
-
+  // Post /users/:id/edit功能
   putUser: async (req, res) => {
     // 檢查是否有名稱
     if (!req.body.name) {
