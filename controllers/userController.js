@@ -117,11 +117,12 @@ const userController = {
   },
 
   putUser: async (req, res) => {
+    // 檢查是否有名稱
     if (!req.body.name) {
       req.flash('error_messages', '請填入修改的名稱！！');
       return res.redirect('back');
     }
-
+    // 檢查是否有自介
     if (!req.body.introduction) {
       req.flash('error_messages', '請填入修改的自我介紹！！');
       return res.redirect('back');
@@ -132,7 +133,7 @@ const userController = {
     }).then(user => {
       return user;
     });
-
+    // 檢查是否有重複使用者名稱
     if (isDuplicateName.length !== 0) {
       req.flash('error_messages', '此名稱已經有人使用！！');
       return res.redirect('back');
@@ -143,40 +144,52 @@ const userController = {
       imgur.setClientID(IMGUR_CLIENT_ID);
       imgur.upload(file.path, (err, img) => {
         if (err) console.log('Upload Img Error: ', err.message);
-        return User.findByPk(req.params.id).then(user => {
-          user
-            .update({
-              name: req.body.name,
-              introduction: req.body.introduction || null,
-              avatar: file ? img.data.link : user.avatar
-            })
-            .then(user => {
-              req.flash('success_messages', '成功註冊帳號！');
-              return res.render('usersEdit', { user });
-            })
-            .catch(err => {
-              req.flash('error_messages', err.message);
-              return res.redirect(`/users/${req.params.id}/edit`);
-            });
-        });
-      });
-    } else {
-      return User.findByPk(req.params.id).then(user => {
-        user
-          .update({
-            name: req.body.name,
-            introduction: req.body.introduction || null,
-            avatar: user.avatar
-          })
+        // Transaction需要處理commit加rollback確保原子性
+        return User.findByPk(req.params.id)
           .then(user => {
-            req.flash('success_messages', '成功註冊帳號！');
-            return res.render('usersEdit', { user });
+            user
+              .update({
+                name: req.body.name,
+                introduction: req.body.introduction,
+                avatar: file ? img.data.link : user.avatar
+              })
+              .then(user => {
+                req.flash('success_messages', '成功修改資料！');
+                return res.render('usersEdit', { user });
+              })
+              .catch(err => {
+                req.flash('error_messages', err.message);
+                return res.redirect(`/users/${req.params.id}/edit`);
+              });
           })
           .catch(err => {
             req.flash('error_messages', err.message);
             return res.redirect(`/users/${req.params.id}/edit`);
           });
       });
+    } else {
+      // Transaction需要處理commit加rollback確保原子性
+      return User.findByPk(req.params.id)
+        .then(user => {
+          user
+            .update({
+              name: req.body.name,
+              introduction: req.body.introduction,
+              avatar: user.avatar
+            })
+            .then(user => {
+              req.flash('success_messages', '成功修改資料！');
+              return res.render('usersEdit', { user });
+            })
+            .catch(err => {
+              req.flash('error_messages', err.message);
+              return res.redirect(`/users/${req.params.id}/edit`);
+            });
+        })
+        .catch(err => {
+          req.flash('error_messages', err.message);
+          return res.redirect(`/users/${req.params.id}/edit`);
+        });
     }
   }
 };
