@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt-nodejs');
 const db = require('../models');
 const User = db.User;
+const Tweet = db.Tweet;
 
 const userController = {
   // 登錄頁面VIEW
@@ -66,13 +67,46 @@ const userController = {
 
   signIn: async (req, res) => {
     req.flash('success_messages', '成功登入!');
-    res.redirect('/');
+    req.user.dataValues.isAdmin
+      ? res.redirect('/admin/tweets')
+      : res.redirect('/tweets');
   },
 
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！');
     req.logout();
     res.redirect('/signin');
+  },
+
+  getUser: (req, res) => {
+    let isCurrentUser;
+    return User.findByPk(req.params.id).then(user => {
+      if (user) {
+        Tweet.findAll().then(tweets => {
+          let userTweets = [];
+          // filtering the equivalent user
+          tweets.map(tweet => {
+            if (tweet.dataValues.UserId === Number(req.params.id)) {
+              userTweets.push(tweet.dataValues);
+            }
+          });
+          // check if is Current User
+          if (req.user) {
+            req.user.id === Number(req.params.id)
+              ? (isCurrentUser = true)
+              : (isCurrentUser = false);
+          }
+          // sort with Date
+          userTweets = userTweets.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+
+          return res.render('dashboard', { user, userTweets, isCurrentUser });
+        });
+      }
+      return res.render('notFound');
+    });
   }
 };
 
