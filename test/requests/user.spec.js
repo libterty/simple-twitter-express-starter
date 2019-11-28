@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 var chai = require('chai');
 var request = require('supertest');
 var sinon = require('sinon');
+var nanoid = require('nanoid');
 var app = require('../../app');
 var helpers = require('../../_helpers');
 var should = chai.should();
@@ -68,11 +69,14 @@ describe('# user request', () => {
       this.ensureAuthenticated = sinon
         .stub(helpers, 'ensureAuthenticated')
         .returns(true);
+      // 傻眼貓咪，這邊寫的有問題改成dataValues.id
       this.getUser = sinon
         .stub(helpers, 'getUser')
-        .returns({ id: 1, Followings: [] });
+        .returns({ dataValues: { id: 1 }, Followings: [] });
       await db.User.create({});
       await db.User.create({});
+      await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet' });
+      await db.Tweet.create({ UserId: 2, description: 'User2 的 Tweet' });
     });
 
     describe('go to edit page', () => {
@@ -102,6 +106,7 @@ describe('# user request', () => {
       this.ensureAuthenticated.restore();
       this.getUser.restore();
       await db.User.destroy({ where: {}, truncate: true });
+      await db.Tweet.destroy({ where: {}, truncate: true });
     });
   });
 
@@ -112,7 +117,7 @@ describe('# user request', () => {
         .returns(true);
       this.getUser = sinon
         .stub(helpers, 'getUser')
-        .returns({ id: 1, Followings: [] });
+        .returns({ dataValues: { id: 1 }, Followings: [] });
       await db.User.create({});
     });
 
@@ -120,13 +125,14 @@ describe('# user request', () => {
       it('will change users intro', done => {
         request(app)
           .post('/users/1/edit')
-          .send('name=abc')
+          .send({ name: 'abc', introduction: 'Hello World!' })
           .set('Accept', 'application/json')
-          .expect(302)
+          .expect(200)
           .end(function(err, res) {
             if (err) return done(err);
             db.User.findByPk(1).then(user => {
               user.name.should.equal('abc');
+              user.introduction.should.equal('Hello World!');
               return done();
             });
           });

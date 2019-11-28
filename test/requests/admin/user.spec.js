@@ -17,7 +17,7 @@ describe('# Admin::User request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1, isAdmin: false }, Followings: [] });
         await db.User.create({ name: 'User1' });
       });
 
@@ -45,7 +45,7 @@ describe('# Admin::User request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [], role: 'admin' });
+          .returns({ dataValues: { id: 1, isAdmin: true }, Followings: [] });
         await db.User.create({ name: 'User1' });
       });
 

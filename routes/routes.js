@@ -1,5 +1,7 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
+const upload = multer({ dest: 'temp/' });
 const passport = require('../config/passport');
 const userController = require('../controllers/userController.js');
 const helpers = require('../_helpers');
@@ -14,18 +16,20 @@ const authenticated = (req, res, next) => {
 
 const authenticatedUser = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
-    if (req.user.id == req.params.id) {
+    // 因為ACC TDD的設定要改成res.locals.user...
+    if (res.locals.user.dataValues.id == req.params.id) {
       return next();
     }
     req.flash('error_messages', 'Bad Request!');
-    return res.redirect(`/users/${req.user.id}/tweets`);
+    return res.redirect('back');
   }
   res.redirect('/signin');
 };
 
 const authenticatedAdmin = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
-    if (req.user.isAdmin) {
+    // 因為ACC TDD的設定要改成res.locals.user...
+    if (res.locals.user.dataValues.isAdmin) {
       return next();
     }
     return res.redirect('/');
@@ -50,6 +54,14 @@ router.post(
 );
 router.get('/logout', userController.logout);
 
-router.get('/users/:id/tweets', authenticated, userController.getUser);
+router.get('/users/:id/tweets', authenticated, userController.getDashboard);
+
+router.get('/users/:id/edit', authenticatedUser, userController.getUser);
+router.post(
+  '/users/:id/edit',
+  authenticatedUser,
+  upload.single('avatar'),
+  userController.putUser
+);
 
 module.exports = router;
