@@ -64,8 +64,8 @@ router.post(
   upload.single('avatar'),
   userController.putUser
 );
-router.post('/tweets/:id/like', authenticated, userController.addLike);
-router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
+router.post('/tweets/:id/like', authenticatedUser, userController.addLike);
+router.post('/tweets/:id/unlike', authenticatedUser, userController.removeLike);
 
 // tweets GET, POST
 router.get('/tweets', authenticated, tweetsController.getTweets);

@@ -16,26 +16,26 @@
                             <a href="#" class="card-link"><small>{{moment this.createdAt}}</small></a>
                         </div>
                         <p class="card-text">{{this.description}}</p>
-                        <div class="card-body">
-                            <a href="#" class="card-link">
+                        <div class="card-body inner-body">
+                            <a href="#" class="card-link inner-body-link">
                                 <strong>Reply</strong>
                                 <small>(2)</small>
                             </a>
                             {{#if (eq (isLikedTweets ../isLike this.id) false)}}
-                            <form action="/tweets/{{this.id}}/like" method="POST">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fas fa-heart"></i>
+                            <form action="/tweets/{{this.id}}/like" method="POST" class="inner-body-form inner-body-like">
+                                <button type="submit" class="btn btn-sm btn-link">
+                                <i class="far fa-heart"></i>
                                 <strong>Like</strong>
-                                <small>(3)</small>
+                                <small>({{this.likeCounts}})</small>
                                 </button>
                             </form>
                             {{/if}}
                             {{#if (eq (isLikedTweets ../isLike this.id) true)}}
-                            <form action="/tweets/{{this.id}}/unlike" method="POST">
-                                <button type="submit" class="btn btn-sm btn-primary">
-                                <i class="far fa-heart"></i>
+                            <form action="/tweets/{{this.id}}/unlike" method="POST" class="inner-body-form inner-body-unLike">
+                                <button type="submit" class="btn btn-sm btn-link">
+                                <i class="fas fa-heart"></i>
                                 <strong>Unlike</strong>
-                                <small>(3)</small>
+                                <small>({{this.likeCounts}})</small>
                                 </button>
                             </form>
                             {{/if}}

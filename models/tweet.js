@@ -9,7 +9,11 @@ module.exports = (sequelize, DataTypes) => {
           len: [1, 140]
         }
       },
-      UserId: DataTypes.INTEGER
+      UserId: DataTypes.INTEGER,
+      likeCounts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      }
     },
     {}
   );

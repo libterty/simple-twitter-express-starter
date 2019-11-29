@@ -49,7 +49,8 @@ module.exports = {
         description: faker.lorem.words(15),
         createdAt: new Date(),
         updatedAt: new Date(),
-        UserId: Math.floor(Math.random() * 3) + 1
+        UserId: Math.floor(Math.random() * 3) + 1,
+        likeCounts: 0
       })),
       {}
     );

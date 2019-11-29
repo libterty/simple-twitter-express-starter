@@ -107,6 +107,7 @@ const userController = {
           res.locals.user.dataValues.LikedTweets.map(tweet =>
             isLike.push(tweet.dataValues.id)
           );
+          console.log('userTweets', userTweets);
           return res.render('dashboard', {
             user,
             userTweets,
@@ -217,13 +218,31 @@ const userController = {
       req.flash('error_messages', 'Bad Request!');
       return res.redirect('back');
     } else {
+      // Transaction需要處理commit加rollback確保原子性
       return Like.create({
         UserId: res.locals.user.dataValues.id,
         TweetId: req.params.id
       })
         .then(() => {
-          req.flash('success_messages', '新增你的按讚！！');
-          return res.redirect('back');
+          Tweet.findByPk(req.params.id)
+            .then(tweet => {
+              // Transaction需要處理高併發
+              tweet
+                .increment('likeCounts')
+                .then(tweet => {
+                  console.log('tweet', tweet);
+                  req.flash('success_messages', '新增你的按讚！！');
+                  return res.redirect('back');
+                })
+                .catch(err => {
+                  req.flash('error_messages', err.message);
+                  return res.redirect('back');
+                });
+            })
+            .catch(err => {
+              req.flash('error_messages', err.message);
+              return res.redirect('back');
+            });
         })
         .catch(err => {
           req.flash('error_messages', err.message);
@@ -247,6 +266,7 @@ const userController = {
       req.flash('error_messages', 'Bad Request!');
       return res.redirect('back');
     } else {
+      // Transaction需要處理commit加rollback確保原子性
       return Like.findOne({
         where: {
           UserId: res.locals.user.dataValues.id,
@@ -257,8 +277,24 @@ const userController = {
           like
             .destroy()
             .then(() => {
-              req.flash('success_messages', '移除你的按讚！！');
-              return res.redirect('back');
+              // Transaction需要處理高併發
+              Tweet.findByPk(req.params.id)
+                .then(tweet => {
+                  tweet
+                    .decrement('likeCounts')
+                    .then(() => {
+                      req.flash('success_messages', '移除你的按讚！！');
+                      return res.redirect('back');
+                    })
+                    .catch(err => {
+                      req.flash('error_messages', err.message);
+                      return res.redirect('back');
+                    });
+                })
+                .catch(err => {
+                  req.flash('error_messages', err.message);
+                  return res.redirect('back');
+                });
             })
             .catch(err => {
               req.flash('error_messages', err.message);
