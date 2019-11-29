@@ -52,7 +52,7 @@ const tweetsController = {
         req.flash('error_messages', '字數需低於140');
         return res.redirect('/');
       }
-      console.log('locals', res.locals.user.id)
+      console.log('locals', res.locals.user.id);
 
       const tweet = await Tweet.create({
         UserId: res.locals.user.id,

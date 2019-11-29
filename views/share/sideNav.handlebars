@@ -27,7 +27,16 @@
             <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit Profile</a>
         {{/if}}
         {{#if (eq isCurrentUser false)}}
-            <button type="button" href="#" class="btn btn-primary" rows="3">Following</button>
+            {{#if (eq (isLikedTweets isFollowed currentUser ) true)}}
+            <form action="/followships/{{user.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-danger">取消追蹤</button>
+            </form>
+            {{/if}}
+            {{#if (eq (isLikedTweets isFollowed currentUser ) false)}}
+            <form action="/followships/{{user.id}}" method="POST">
+                <button type="submit" class="btn btn-primary">追蹤</button>
+            </form>
+            {{/if}}
         {{/if}}
     </div>
 </div>

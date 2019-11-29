@@ -4,6 +4,7 @@ const db = require('../models');
 const User = db.User;
 const Tweet = db.Tweet;
 const Like = db.Like;
+const Followship = db.Followship;
 const IMGUR_CLIENT_ID = process.env.imgur_id;
 
 const userController = {
@@ -82,6 +83,8 @@ const userController = {
   getDashboard: (req, res) => {
     let isCurrentUser;
     let isLike = [];
+    let isFollowed = [];
+    let currentUser = Number(req.params.id)
     return User.findByPk(req.params.id).then(user => {
       if (user) {
         Tweet.findAll().then(tweets => {
@@ -107,22 +110,30 @@ const userController = {
           res.locals.user.dataValues.LikedTweets.map(tweet =>
             isLike.push(tweet.dataValues.id)
           );
+          // get all following Users in an array
+          const followLists = res.locals.user.dataValues.Followings;
+          followLists.map(user => {
+            isFollowed.push(user.dataValues.id);
+          });
+
           return res.render('dashboard', {
             user,
             userTweets,
             isCurrentUser,
-            isLike
+            isLike,
+            isFollowed,
+            currentUser
           });
         });
       } else {
-        return res.render('notFound');
+        return res.render('404');
       }
     });
   },
   // Get /users/:id/edit頁面
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return user ? res.render('usersEdit', { user }) : res.render('notFound');
+      return user ? res.render('usersEdit', { user }) : res.render('404');
     });
   },
   // Post /users/:id/edit功能
@@ -303,6 +314,83 @@ const userController = {
           req.flash('error_messages', err.message);
           return res.redirect('back');
         });
+    }
+  },
+
+  addFollowing: async (req, res) => {
+    console.log('res.locals.user.dataValues.id', res.locals.user.dataValues.id);
+    console.log('req.params.followingId', req.params.followingId);
+    if (res.locals.user.dataValues.id === Number(req.params.followingId)) {
+      req.flash('error_messages', 'Bad Request!');
+      return res.redirect('back');
+    }
+
+    // prevent injection attack
+    const isFollowed = await Followship.findAll({
+      where: {
+        followerId: res.locals.user.dataValues.id,
+        followingId: req.params.followingId
+      }
+    }).then(follow => {
+      return follow;
+    });
+
+    if (isFollowed.length !== 0) {
+      req.flash('error_messages', 'Bad Request!');
+      return res.redirect('back');
+    } else {
+      return Followship.create({
+        followerId: res.locals.user.dataValues.id,
+        followingId: req.params.followingId
+      })
+        .then(() => {
+          req.flash('success_messages', '新增追蹤！！');
+          return res.redirect('back');
+        })
+        .catch(err => {
+          req.flash('error_messages', err.message);
+          return res.redirect('back');
+        });
+    }
+  },
+
+  removeFollowing: async (req, res) => {
+    if (res.locals.user.dataValues.id === Number(req.params.followingId)) {
+      req.flash('error_messages', 'Bad Request!');
+      return res.redirect('back');
+    }
+
+    // prevent injection attack
+    const isRemoved = await Followship.findAll({
+      where: {
+        followerId: res.locals.user.dataValues.id,
+        followingId: req.params.followingId
+      }
+    }).then(follow => {
+      return follow;
+    });
+
+    if (isRemoved.length === 0) {
+      req.flash('error_messages', 'Bad Request!');
+      return res.redirect('back');
+    } else {
+      return Followship.findOne({
+        where: {
+          followerId: res.locals.user.dataValues.id,
+          followingId: req.params.followingId
+        }
+      }).then(followship => {
+        followship
+          .destroy()
+          .then(() => {
+            req.flash('success_messages', '移除追蹤！！');
+            return res.redirect('back');
+          })
+          .catch(err => {
+            req.flash('error_messages', err.message);
+            return res.redirect('back');
+          });
+      });
     }
   }
 };
