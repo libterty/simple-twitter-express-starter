@@ -41,8 +41,6 @@ const tweetsController = {
     }
   },
   addTweet: async (req, res) => {
-    console.log('req.body', req.body);
-    console.log('req.user', res.locals.user.dataValues.id);
     const { description } = req.body;
     try {
       if (!description) {

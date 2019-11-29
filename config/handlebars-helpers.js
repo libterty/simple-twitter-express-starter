@@ -14,5 +14,19 @@ module.exports = {
   },
   reduceLength: function(a) {
     return a.substring(0, 50);
+  },
+  /**
+   * @param {array} tweetId
+   * @param {number} tweetId
+   * @return {Boolean}
+   */
+  isLikedTweets: function(arr, id) {
+    if (arr.indexOf(id) !== -1) {
+      // already add like
+      return true;
+    } else {
+      // unlike
+      return false;
+    }
   }
 };

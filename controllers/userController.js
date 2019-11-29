@@ -81,6 +81,7 @@ const userController = {
   // Get /users/:id/tweets頁面
   getDashboard: (req, res) => {
     let isCurrentUser;
+    let isLike = [];
     return User.findByPk(req.params.id).then(user => {
       if (user) {
         Tweet.findAll().then(tweets => {
@@ -102,8 +103,16 @@ const userController = {
             (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
-          console.log('user', user);
-          return res.render('dashboard', { user, userTweets, isCurrentUser });
+          // get all likeTweets in array
+          res.locals.user.dataValues.LikedTweets.map(tweet =>
+            isLike.push(tweet.dataValues.id)
+          );
+          return res.render('dashboard', {
+            user,
+            userTweets,
+            isCurrentUser,
+            isLike
+          });
         });
       } else {
         return res.render('notFound');
@@ -198,28 +207,27 @@ const userController = {
     // Prevent Injection Attack
     const isLiked = await Like.findAll({
       where: {
-        UserId: req.user.id,
-        TweetId: req.params.tweetId
+        UserId: res.locals.user.dataValues.id,
+        TweetId: req.params.id
       }
     }).then(like => {
       return like;
     });
-
     if (isLiked.length !== 0) {
       req.flash('error_messages', 'Bad Request!');
-      return res.redirect(400, 'back');
+      return res.redirect('back');
     } else {
       return Like.create({
-        UserId: req.user.id,
-        TweetId: req.params.tweetId
+        UserId: res.locals.user.dataValues.id,
+        TweetId: req.params.id
       })
         .then(() => {
           req.flash('success_messages', '新增你的按讚！！');
-          return res.redirect(200, 'back');
+          return res.redirect('back');
         })
         .catch(err => {
           req.flash('error_messages', err.message);
-          return res.redirect(500, 'back');
+          return res.redirect('back');
         });
     }
   },
@@ -228,8 +236,8 @@ const userController = {
     // Prevent Injection Attack
     const isRemoved = await Like.findAll({
       where: {
-        UserId: req.user.id,
-        TweetId: req.params.tweetId
+        UserId: res.locals.user.dataValues.id,
+        TweetId: req.params.id
       }
     }).then(like => {
       return like;
@@ -237,12 +245,12 @@ const userController = {
 
     if (isRemoved.length === 0) {
       req.flash('error_messages', 'Bad Request!');
-      return res.redirect(400, 'back');
+      return res.redirect('back');
     } else {
       return Like.findOne({
         where: {
-          UserId: req.user.id,
-          TweetId: req.params.tweetId
+          UserId: res.locals.user.dataValues.id,
+          TweetId: req.params.id
         }
       })
         .then(like => {
@@ -250,16 +258,16 @@ const userController = {
             .destroy()
             .then(() => {
               req.flash('success_messages', '移除你的按讚！！');
-              return res.redirect(200, 'back');
+              return res.redirect('back');
             })
             .catch(err => {
               req.flash('error_messages', err.message);
-              return res.redirect(500, 'back');
+              return res.redirect('back');
             });
         })
         .catch(err => {
           req.flash('error_messages', err.message);
-          return res.redirect(500, 'back');
+          return res.redirect('back');
         });
     }
   }

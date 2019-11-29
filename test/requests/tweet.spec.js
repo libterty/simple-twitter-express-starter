@@ -84,8 +84,7 @@ describe('# tweet request', () => {
       });
       it('will create current users tweet', done => {
         db.Tweet.findOne({ where: { userId: 1 } }).then(tweet => {
-          console.log('tweet log', tweet);
-          // expect(tweet).to.not.be.null;
+          expect(tweet).to.not.be.null;
           done();
         });
       });
@@ -155,7 +154,7 @@ describe('# tweet request', () => {
     });
   });
 
-  context.skip('# like', () => {
+  context('# like', () => {
     describe('like first tweet', () => {
       before(async () => {
         this.ensureAuthenticated = sinon
@@ -163,7 +162,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
         await db.Tweet.create({ UserId: 1 });
       });
@@ -195,7 +194,7 @@ describe('# tweet request', () => {
     });
   });
 
-  context.skip('# unlike', () => {
+  context('# unlike', () => {
     describe('like first tweet', () => {
       before(async () => {
         this.ensureAuthenticated = sinon
@@ -203,7 +202,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
         await db.Tweet.create({ UserId: 1, description: 'test' });
         await db.Like.create({ UserId: 1, TweetId: 1 });
