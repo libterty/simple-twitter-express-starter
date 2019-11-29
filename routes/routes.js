@@ -4,6 +4,7 @@ const router = express.Router();
 const upload = multer({ dest: 'temp/' });
 const passport = require('../config/passport');
 const userController = require('../controllers/userController.js');
+const tweetsController = require('../controllers/tweetsController.js');
 const helpers = require('../_helpers');
 
 // authentication function
@@ -37,7 +38,7 @@ const authenticatedAdmin = (req, res, next) => {
   res.redirect('/signin');
 };
 
-// TODO: root
+// root
 router.get('/', authenticated, (req, res) => res.redirect(302, '/tweets'));
 
 // user signIn, register, logout
@@ -65,5 +66,9 @@ router.post(
 );
 router.post('/tweets/:id/like', authenticated, userController.addLike);
 router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
+
+// tweets GET, POST
+router.get('/tweets', authenticated, tweetsController.getTweets);
+router.post('/tweets', authenticated, tweetsController.addTweet);
 
 module.exports = router;

@@ -1,0 +1,68 @@
+<div class="row">
+  <div class="col-lg-8 ">
+    <div class="mb-5">
+      <form accept-charset="UTF-8" class="" action="" method="POST">
+        <textarea class="form-control animated fadeIn" minlength="1" maxlength="140" id="tweet"
+          placeholder="Type in your message" rows="5" name="description" spellcheck="true" required
+          oninput="countCharacters()"></textarea>
+        <h6 id="charactersRemaining" class="text-muted">140 characters remaining</h6>
+        <button class="btn btn-primary px-3 float-right my-3" type="submit">Tweet</button>
+      </form>
+    </div>
+    <div class="py-5">
+      {{#each tweets}}
+      <div class="card flex-row mb-2">
+        <div class="card-header bg-white my-auto border-0">
+          <a href="/users/{{this.UserId}}/tweets"><img src="{{this.User.avatar}}" class="media-avatar" alt="avatar"></a>
+        </div>
+        <div class="card-body float-right my-2">
+          <a href="/users/{{this.UserId}}/tweets">
+            <strong class="card-title">@{{this.User.name}}
+              {{#if this.User.isAdmin}}
+              <i class="fas fa-user-secret text-muted"></i>
+              {{/if}}
+            </strong>
+          </a>
+          <span class="text-muted"> ‧ {{moment this.updatedAt}}</span>
+          <p class="card-text">{{this.description}}</p>
+          <div class="row">
+            <a href="/tweets/{{this.id}}/replies"
+              class="mr-3 btn btn-default bg-white text-primary border-0 ">Reply(2)</a>
+            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
+                class="btn btn-default bg-white text-danger border-0"><i class="fas fa-heart"></i>Liked(2)</button>
+            </form>
+            <form action="/favorite/{{this.id}}" method="POST"><button type="submit"
+                class="btn btn-default bg-white text-danger border-0"><i class="far fa-heart"></i> Like(2)</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  <div class="col-lg-4 d-none d-lg-block">
+    <h3 class="mb-3">Popular</h3>
+    {{#each users}}
+    <div class="card flex-row my-2">
+      <div class="card-header bg-white mx-auto border-0">
+        <a href="/users/{{this.id}}/tweets"><img src="{{this.avatar}}" class="media-avatar" alt="avatar"></a>
+      </div>
+      <div class="card-body mb-2">
+        <a href="/users/{{this.id}}/tweets">
+          <h5 class="card-title mt-2">@{{this.name}}
+            {{#if this.isAdmin}}
+            <i class="fas fa-user-secret text-muted"></i>
+            {{/if}}
+          </h5>
+        </a>
+        <p class="card-text mr-2 font-weight-light">{{reduceLength this.introduction}}</p>
+        <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
+            type="submit" class="btn btn-outline-danger" style="border-radius: 24px!important;">Unfollow</button>
+        </form>
+        <form action="/following/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
+            class="btn btn-outline-success" style="border-radius: 24px!important;">Follow</button></form>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
