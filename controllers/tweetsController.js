@@ -41,6 +41,8 @@ const tweetsController = {
     }
   },
   addTweet: async (req, res) => {
+    console.log('req.body', req.body);
+    console.log('req.user', res.locals.user.dataValues.id);
     const { description } = req.body;
     try {
       if (!description) {
@@ -52,7 +54,7 @@ const tweetsController = {
         return res.redirect('/');
       }
       const tweet = await Tweet.create({
-        UserId: req.user.id,
+        UserId: res.locals.user.dataValues.id,
         description
       });
       await tweet.save();
