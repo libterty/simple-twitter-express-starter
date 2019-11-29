@@ -107,7 +107,6 @@ const userController = {
           res.locals.user.dataValues.LikedTweets.map(tweet =>
             isLike.push(tweet.dataValues.id)
           );
-          console.log('userTweets', userTweets);
           return res.render('dashboard', {
             user,
             userTweets,
@@ -230,7 +229,6 @@ const userController = {
               tweet
                 .increment('likeCounts')
                 .then(tweet => {
-                  console.log('tweet', tweet);
                   req.flash('success_messages', '新增你的按讚！！');
                   return res.redirect('back');
                 })
