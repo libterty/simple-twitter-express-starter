@@ -63,5 +63,7 @@ router.post(
   upload.single('avatar'),
   userController.putUser
 );
+router.post('/tweets/:id/like', authenticated, userController.addLike);
+router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
 
 module.exports = router;

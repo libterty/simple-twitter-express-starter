@@ -3,6 +3,7 @@ const imgur = require('imgur-node-api');
 const db = require('../models');
 const User = db.User;
 const Tweet = db.Tweet;
+const Like = db.Like;
 const IMGUR_CLIENT_ID = process.env.imgur_id;
 
 const userController = {
@@ -101,7 +102,7 @@ const userController = {
             (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
-
+          console.log('user', user);
           return res.render('dashboard', { user, userTweets, isCurrentUser });
         });
       } else {
@@ -189,6 +190,76 @@ const userController = {
         .catch(err => {
           req.flash('error_messages', err.message);
           return res.redirect(`/users/${req.params.id}/edit`);
+        });
+    }
+  },
+
+  addLike: async (req, res) => {
+    // Prevent Injection Attack
+    const isLiked = await Like.findAll({
+      where: {
+        UserId: req.user.id,
+        TweetId: req.params.tweetId
+      }
+    }).then(like => {
+      return like;
+    });
+
+    if (isLiked.length !== 0) {
+      req.flash('error_messages', 'Bad Request!');
+      return res.redirect(400, 'back');
+    } else {
+      return Like.create({
+        UserId: req.user.id,
+        TweetId: req.params.tweetId
+      })
+        .then(() => {
+          req.flash('success_messages', '新增你的按讚！！');
+          return res.redirect(200, 'back');
+        })
+        .catch(err => {
+          req.flash('error_messages', err.message);
+          return res.redirect(500, 'back');
+        });
+    }
+  },
+
+  removeLike: async (req, res) => {
+    // Prevent Injection Attack
+    const isRemoved = await Like.findAll({
+      where: {
+        UserId: req.user.id,
+        TweetId: req.params.tweetId
+      }
+    }).then(like => {
+      return like;
+    });
+
+    if (isRemoved.length === 0) {
+      req.flash('error_messages', 'Bad Request!');
+      return res.redirect(400, 'back');
+    } else {
+      return Like.findOne({
+        where: {
+          UserId: req.user.id,
+          TweetId: req.params.tweetId
+        }
+      })
+        .then(like => {
+          like
+            .destroy()
+            .then(() => {
+              req.flash('success_messages', '移除你的按讚！！');
+              return res.redirect(200, 'back');
+            })
+            .catch(err => {
+              req.flash('error_messages', err.message);
+              return res.redirect(500, 'back');
+            });
+        })
+        .catch(err => {
+          req.flash('error_messages', err.message);
+          return res.redirect(500, 'back');
         });
     }
   }
