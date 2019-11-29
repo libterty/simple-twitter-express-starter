@@ -67,5 +67,6 @@ router.post(
 
 // tweets GET, POST
 router.get('/tweets', authenticated, tweetsController.getTweets);
+router.post('/tweets', authenticated, tweetsController.addTweet);
 
 module.exports = router;

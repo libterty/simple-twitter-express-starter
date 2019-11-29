@@ -2,9 +2,10 @@
   <div class="col-lg-8 ">
     <div class="mb-5">
       <form accept-charset="UTF-8" class="" action="" method="POST">
-        <textarea class="form-control animated fadeIn" id="exampleFormControlTextarea1"
-          placeholder="Type in your message" rows="5"></textarea>
-        <h6 class="text-muted">140 characters remaining</h6>
+        <textarea class="form-control animated fadeIn" minlength="1" maxlength="140" id="tweet"
+          placeholder="Type in your message" rows="5" name="description" spellcheck="true" required
+          oninput="countCharacters()"></textarea>
+        <h6 id="charactersRemaining" class="text-muted">140 characters remaining</h6>
         <button class="btn btn-primary px-3 float-right my-3" type="submit">Tweet</button>
       </form>
     </div>
@@ -54,7 +55,7 @@
             {{/if}}
           </h5>
         </a>
-        <p class="card-text mr-2 font-weight-light">{{this.introduction}}</p>
+        <p class="card-text mr-2 font-weight-light">{{reduceLength this.introduction}}</p>
         <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
             type="submit" class="btn btn-outline-danger" style="border-radius: 24px!important;">Unfollow</button>
         </form>
