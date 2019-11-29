@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt-nodejs');
+const imgur = require('imgur-node-api');
 const db = require('../models');
 const User = db.User;
 const Tweet = db.Tweet;
+const IMGUR_CLIENT_ID = process.env.imgur_id;
 
 const userController = {
   // 登錄頁面VIEW
@@ -60,25 +62,23 @@ const userController = {
       });
     });
   },
-
+  // render 登入頁面
   signInPage: (req, res) => {
     return res.render('signin');
   },
-
-  signIn: async (req, res) => {
+  // Post 登入功能
+  signIn: (req, res) => {
     req.flash('success_messages', '成功登入!');
-    req.user.dataValues.isAdmin
-      ? res.redirect('/admin/tweets')
-      : res.redirect('/tweets');
+    req.user.isAdmin ? res.redirect('/admin/tweets') : res.redirect('/tweets');
   },
-
+  // Get 登出頁面
   logout: (req, res) => {
     req.flash('success_messages', '登出成功！');
     req.logout();
     res.redirect('/signin');
   },
-
-  getUser: (req, res) => {
+  // Get /users/:id/tweets頁面
+  getDashboard: (req, res) => {
     let isCurrentUser;
     return User.findByPk(req.params.id).then(user => {
       if (user) {
@@ -104,9 +104,93 @@ const userController = {
 
           return res.render('dashboard', { user, userTweets, isCurrentUser });
         });
+      } else {
+        return res.render('notFound');
       }
-      return res.render('notFound');
     });
+  },
+  // Get /users/:id/edit頁面
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id).then(user => {
+      return user ? res.render('usersEdit', { user }) : res.render('notFound');
+    });
+  },
+  // Post /users/:id/edit功能
+  putUser: async (req, res) => {
+    // 檢查是否有名稱
+    if (!req.body.name) {
+      req.flash('error_messages', '請填入修改的名稱！！');
+      return res.redirect('back');
+    }
+    // 檢查是否有自介
+    if (!req.body.introduction) {
+      req.flash('error_messages', '請填入修改的自我介紹！！');
+      return res.redirect('back');
+    }
+
+    const isDuplicateName = await User.findAll({
+      where: { name: req.body.name }
+    }).then(user => {
+      return user;
+    });
+    // 檢查是否有重複使用者名稱
+    if (isDuplicateName.length !== 0) {
+      req.flash('error_messages', '此名稱已經有人使用！！');
+      return res.redirect('back');
+    }
+
+    const { file } = req;
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        if (err) console.log('Upload Img Error: ', err.message);
+        // Transaction需要處理commit加rollback確保原子性
+        return User.findByPk(req.params.id)
+          .then(user => {
+            user
+              .update({
+                name: req.body.name,
+                introduction: req.body.introduction,
+                avatar: file ? img.data.link : user.avatar
+              })
+              .then(user => {
+                req.flash('success_messages', '成功修改資料！');
+                return res.render('usersEdit', { user });
+              })
+              .catch(err => {
+                req.flash('error_messages', err.message);
+                return res.redirect(`/users/${req.params.id}/edit`);
+              });
+          })
+          .catch(err => {
+            req.flash('error_messages', err.message);
+            return res.redirect(`/users/${req.params.id}/edit`);
+          });
+      });
+    } else {
+      // Transaction需要處理commit加rollback確保原子性
+      return User.findByPk(req.params.id)
+        .then(user => {
+          user
+            .update({
+              name: req.body.name,
+              introduction: req.body.introduction,
+              avatar: user.avatar
+            })
+            .then(user => {
+              req.flash('success_messages', '成功修改資料！');
+              return res.render('usersEdit', { user });
+            })
+            .catch(err => {
+              req.flash('error_messages', err.message);
+              return res.redirect(`/users/${req.params.id}/edit`);
+            });
+        })
+        .catch(err => {
+          req.flash('error_messages', err.message);
+          return res.redirect(`/users/${req.params.id}/edit`);
+        });
+    }
   }
 };
 

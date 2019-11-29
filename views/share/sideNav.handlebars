@@ -1,0 +1,33 @@
+<div class="col-md-4">
+    <img src="{{user.avatar}}" class="card-img-top" alt="{{user.name}}">
+    <div class="card-body">
+        <h5 class="card-title" style="text-align: center;">{{user.name}}</h5>
+        <p class="card-text">{{user.introduction}}</p>
+        <br>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>Tweets : </strong>
+                <small>{{postLength userTweets}}</small>
+            </li>
+            <li class="list-group-item">
+                <strong>Following : </strong>
+                <small>14</small>
+            </li>
+            <li class="list-group-item">
+                <strong>Follower : </strong>
+                <small>10</small>
+            </li>
+            <li class="list-group-item">
+                <strong>Like : </strong>
+                <small>23</small>
+            </li>
+        </ul>
+        <br>
+        {{#if (eq isCurrentUser true)}}
+            <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit Profile</a>
+        {{/if}}
+        {{#if (eq isCurrentUser false)}}
+            <button type="button" href="#" class="btn btn-primary" rows="3">Following</button>
+        {{/if}}
+    </div>
+</div>

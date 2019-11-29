@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -21,10 +22,12 @@ app.engine(
   'handlebars',
   handlebars({
     defaultLayout: 'main',
-    helpers: require('./config/handlebars-helpers')
+    helpers: require('./config/handlebars-helpers'),
+    partialsDir: [path.join(__dirname, 'views/share')]
   })
 );
 app.set('view engine', 'handlebars');
+app.use('/upload', express.static(__dirname + '/upload'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
