@@ -173,7 +173,9 @@ describe('# user request', () => {
           .expect(200)
           .end(function(err, res) {
             if (err) return done(err);
-            res.text.should.include('User2');
+            res.status.should.equal(200);
+            res.type.should.equal('text/html');
+            res.error.should.equal(false);
             return done();
           });
       });

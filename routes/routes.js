@@ -64,6 +64,12 @@ router.get(
   authenticated,
   userController.getTopFollowers
 );
+// Get users Followings page
+router.get(
+  '/users/:id/followings',
+  authenticated,
+  userController.getTopFollowings
+);
 // post edit user profile
 router.post(
   '/users/:id/edit',

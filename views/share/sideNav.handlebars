@@ -10,8 +10,10 @@
                 <small>{{postLength userTweets}}</small>
             </li>
             <li class="list-group-item">
-                <strong>Following : </strong>
-                <small>{{postLength totalFollowings}}</small>
+                <a href="/users/{{user.id}}/followings">
+                    <strong>Following : </strong>
+                    <small>{{postLength totalFollowings}}</small>
+                </a>
             </li>
             <li class="list-group-item">
                 <a href="/users/{{user.id}}/followers">

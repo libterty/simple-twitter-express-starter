@@ -491,6 +491,83 @@ const userController = {
         return res.render('404');
       }
     });
+  },
+
+  getTopFollowings: (req, res) => {
+    let isFollowed = [];
+    let currentUser = Number(req.params.id);
+
+    return User.findByPk(req.params.id).then(user => {
+      if (user) {
+        Tweet.findAll().then(async tweets => {
+          // return length
+          const totalLikes = await Like.findAll({
+            where: { UserId: req.params.id }
+          }).then(usersId => usersId);
+          // return length
+          const totalFollowings = await Followship.findAll({
+            where: { followerId: req.params.id }
+          }).then(usersId => usersId);
+          // return length
+          const totalFollowers = await Followship.findAll({
+            where: { followingId: req.params.id }
+          }).then(usersId => usersId);
+          // Check followings
+          const followLists = res.locals.user.dataValues.Followings;
+          let userTweets = [];
+          // filtering the equivalent user
+          tweets.map(tweet => {
+            if (tweet.dataValues.UserId === Number(req.params.id)) {
+              userTweets.push(tweet.dataValues);
+            }
+          });
+          // get all following Users in an array
+          if (followLists) {
+            followLists.map(user => {
+              isFollowed.push(user.dataValues.id);
+            });
+          }
+          let tFollowings = totalFollowings.map(
+            item => item.dataValues.followingId
+          );
+          User.findAll({
+            where: {
+              id: {
+                [Op.in]: tFollowings
+              }
+            }
+          }).then(followings => {
+            followings = followings
+              .map(f => ({
+                ...f.dataValues,
+                followOrder: totalFollowings
+                  .filter(i => i.dataValues)
+                  .find(item => item.followingId == f.dataValues.id).createdAt
+              }))
+              .sort(
+                (a, b) =>
+                  new Date(b.followOrder).getTime() -
+                  new Date(a.followOrder).getTime()
+              );
+            console.log('followers', followings);
+            return res.render('usersFollowings', {
+              user,
+              localUser: res.locals.user.dataValues,
+              followings,
+              userTweets,
+              isCurrentUser: res.locals.user.dataValues.id,
+              isFollowed,
+              currentUser,
+              totalLikes,
+              totalFollowers,
+              totalFollowings
+            });
+          });
+        });
+      } else {
+        return res.render('404');
+      }
+    });
   }
 };
 
