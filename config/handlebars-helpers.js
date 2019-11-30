@@ -10,6 +10,7 @@ module.exports = {
     return a.replace(/@example.com/g, '');
   },
   postLength: function(a) {
+    if (!a) return 0;
     return a.length;
   },
   reduceLength: function(a) {
