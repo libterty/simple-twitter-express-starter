@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt-nodejs');
+const Sequelize = require('sequelize');
 const imgur = require('imgur-node-api');
 const db = require('../models');
 const User = db.User;
@@ -6,6 +7,7 @@ const Tweet = db.Tweet;
 const Like = db.Like;
 const Followship = db.Followship;
 const IMGUR_CLIENT_ID = process.env.imgur_id;
+const Op = Sequelize.Op;
 
 const userController = {
   // 登錄頁面VIEW
@@ -87,7 +89,16 @@ const userController = {
     let currentUser = Number(req.params.id);
     return User.findByPk(req.params.id).then(user => {
       if (user) {
-        Tweet.findAll().then(tweets => {
+        Tweet.findAll().then(async tweets => {
+          const totalLikes = await Like.findAll({
+            where: { UserId: req.params.id }
+          }).then(usersId => usersId);
+          const totalFollowings = await Followship.findAll({
+            where: { followerId: req.params.id }
+          }).then(usersId => usersId);
+          const totalFollowers = await Followship.findAll({
+            where: { followingId: req.params.id }
+          }).then(usersId => usersId);
           let userTweets = [];
           // filtering the equivalent user
           tweets.map(tweet => {
@@ -115,12 +126,10 @@ const userController = {
           followLists.map(user => {
             isFollowed.push(user.dataValues.id);
           });
-          const totalLikes = res.locals.user.dataValues.LikedTweets.length;
-          const totalFollowers = res.locals.user.dataValues.Followers.length;
-          const totalFollowings = res.locals.user.dataValues.Followings.length;
 
           return res.render('dashboard', {
             user,
+            localUser: res.locals.user.dataValues,
             userTweets,
             isCurrentUser,
             isLike,
@@ -139,7 +148,7 @@ const userController = {
   // Get /users/:id/edit頁面
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return user ? res.render('usersEdit', { user }) : res.render('404');
+      return user ? res.render('usersEdit', { user, localUser: res.locals.user.dataValues, }) : res.render('404');
     });
   },
   // Post /users/:id/edit功能
@@ -400,41 +409,55 @@ const userController = {
 
   getTopFollowers: (req, res) => {
     let isCurrentUser;
-    // let isLike = [];
     let isFollowed = [];
     let currentUser = Number(req.params.id);
-    return User.findAll({
-      include: [{ model: User, as: 'Followers' }]
-    }).then(userLists => {
-      userLists = userLists.map(user => ({
-        ...user.dataValues,
-        FollowerCount: res.locals.user.dataValues.Followers.length
-      }));
-      userLists = userLists.sort((a, b) => b.FollowerCount - a.FollowerCount);
-      console.log('userLists log', res.locals.user.dataValues);
-      // get all following Users in an array
-      const followLists = res.locals.user.dataValues.Followings;
-      followLists.map(user => {
-        isFollowed.push(user.dataValues.id);
-      });
-      if (req.user) {
-        req.user.id === Number(req.params.id)
-          ? (isCurrentUser = true)
-          : (isCurrentUser = false);
+
+    return User.findByPk(req.params.id).then(user => {
+      if (user) {
+        Tweet.findAll().then(async tweets => {
+          const totalLikes = await Like.findAll({
+            where: { UserId: req.params.id }
+          }).then(usersId => usersId);
+          const totalFollowings = await Followship.findAll({
+            where: { followerId: req.params.id }
+          }).then(usersId => usersId);
+          const totalFollowers = await Followship.findAll({
+            where: { followingId: req.params.id }
+          }).then(usersId => usersId);
+          const followLists = res.locals.user.dataValues.Followings;
+          let userTweets = [];
+          // filtering the equivalent user
+          tweets.map(tweet => {
+            if (tweet.dataValues.UserId === Number(req.params.id)) {
+              userTweets.push(tweet.dataValues);
+            }
+          });
+          // check if is Current User
+          if (req.user) {
+            req.user.id === Number(req.params.id)
+              ? (isCurrentUser = true)
+              : (isCurrentUser = false);
+          }
+          // get all following Users in an array
+          followLists.map(user => {
+            isFollowed.push(user.dataValues.id);
+          });
+
+          return res.render('usersFollowers', {
+            user,
+            localUser: res.locals.user.dataValues,
+            userTweets,
+            isCurrentUser,
+            isFollowed,
+            currentUser,
+            totalLikes,
+            totalFollowers,
+            totalFollowings
+          });
+        });
+      } else {
+        return res.render('404');
       }
-      const totalLikes = res.locals.user.dataValues.LikedTweets.length;
-      const totalFollowers = res.locals.user.dataValues.Followers.length;
-      const totalFollowings = res.locals.user.dataValues.Followings.length;
-      return res.render('usersFollowers', {
-        user: res.locals.user.dataValues,
-        userLists,
-        isCurrentUser,
-        isFollowed,
-        currentUser,
-        totalLikes,
-        totalFollowers,
-        totalFollowings
-      });
     });
   }
 };

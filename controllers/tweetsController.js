@@ -34,7 +34,8 @@ const tweetsController = {
 
       return res.render('tweets', {
         tweets: data,
-        users: usersData
+        users: usersData,
+        localUser: res.locals.user.dataValues
       });
     } catch (e) {
       return res.status(400).render('404');

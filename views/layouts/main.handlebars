@@ -108,13 +108,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          {{#if user.isAdmin}}
+          {{#if localUser.isAdmin}}
           <a href="/admin" class="btn btn-primary" style="color: white;margin-right: 10px;">前往後台</a>
           {{/if}}
-          {{#if user}}
-          <span style="color: white;margin-right: 10px;">Hi, {{replace user.email}}</span>
-          <a href="/users/{{user.id}}" class="btn btn-primary" style="color: white;margin-right: 10px;"><img
-              src="{{user.avatar}}" class="media-avatar" alt="avatar" style=" width: 30px; height: 30px;"></a>
+          {{#if localUser}}
+          <span style="color: white;margin-right: 10px;">Hi, {{replace localUser.email}}</span>
+          <a href="/users/{{localUser.id}}" class="btn btn-primary" style="color: white;margin-right: 10px;"><img
+              src="{{localUser.avatar}}" class="media-avatar" alt="avatar" style=" width: 30px; height: 30px;"></a>
           <a href="/logout"><button class="btn btn-primary"
               class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
           {{/if}}

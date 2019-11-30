@@ -10,6 +10,7 @@ module.exports = {
     return a.replace(/@example.com/g, '');
   },
   postLength: function(a) {
+    if (!a) return 0;
     return a.length;
   },
   reduceLength: function(a) {
@@ -21,8 +22,6 @@ module.exports = {
    * @return {Boolean}
    */
   isLikedTweets: function(arr, id) {
-    console.log('arr log', arr);
-    console.log('id log', id);
     if (arr.indexOf(id) !== -1) {
       // already add like
       return true;
