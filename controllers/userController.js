@@ -84,7 +84,7 @@ const userController = {
     let isCurrentUser;
     let isLike = [];
     let isFollowed = [];
-    let currentUser = Number(req.params.id)
+    let currentUser = Number(req.params.id);
     return User.findByPk(req.params.id).then(user => {
       if (user) {
         Tweet.findAll().then(tweets => {
@@ -115,6 +115,11 @@ const userController = {
           followLists.map(user => {
             isFollowed.push(user.dataValues.id);
           });
+          const totalLikes = res.locals.user.dataValues.LikedTweets.length;
+          const totalFollowers = res.locals.user.dataValues.Followers.length;
+          const totalFollowings = res.locals.user.dataValues.Followings.length;
+
+          console.log(res.locals.user.dataValues);
 
           return res.render('dashboard', {
             user,
@@ -122,7 +127,10 @@ const userController = {
             isCurrentUser,
             isLike,
             isFollowed,
-            currentUser
+            currentUser,
+            totalLikes,
+            totalFollowers,
+            totalFollowings
           });
         });
       } else {
