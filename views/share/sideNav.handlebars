@@ -1,4 +1,4 @@
-<div class="col-md-4 mt-5">
+<div class="col-lg-4 mt-5">
   <div class="card profile">
     <div class="top-sec">
       <img src="{{user.avatar}}">
@@ -6,10 +6,16 @@
     <div class="span4 collapse-group">
       <div class="d-flex justify-content-around mb-2">
         <h2 class="card-title">{{user.name}}</h2>
-        {{#if (eq isCurrentUser true)}}
-        <button href="#" type="button" class="btn btn-success ml-5">
-          Following
-        </button>
+        {{#if (eq isCurrentUser false)}}
+        {{#if (eq (isLikedTweets isFollowed currentUser) true)}}
+        <form action="/followships/{{user.id}}?_method=DELETE" method="POST">
+          <button type="submit" class="btn btn-danger ml-5">Following</button>
+        </form>
+        {{else}}
+        <form action="/followships/{{user.id}}" method="POST">
+          <button type="submit" class="btn btn-primary ml-5">Follow</button>
+        </form>
+        {{/if}}
         {{/if}}
       </div>
       <div class="m-3">
@@ -21,29 +27,25 @@
       </div>
     </div>
   </div>
-</div>
-<div class="col-md-4 my-3">
-  <div class="card profile">
+  <div class="card profile my-3">
     <li class="list-group-item border-0">
       <strong>{{postLength userTweets}}</strong>
       <span class="text-muted font-weight-light">Tweets</span>
     </li>
     <li class="list-group-item border-0">
-      <strong>14</strong>
+      <strong>{{postLength totalFollowings}}</strong>
       <span class="text-muted font-weight-light">Following</span>
     </li>
     <li class="list-group-item border-0">
-      <strong>10</strong>
+      <strong>{{postLength totalFollowers}}</strong>
       <span class="text-muted font-weight-light">Followers</span>
     </li>
     <li class="list-group-item border-0">
-      <strong>23</strong>
+      <strong>{{postLength totalLikes}}</strong>
       <span class="text-muted font-weight-light">Likes</span>
     </li>
   </div>
-</div>
-<div class="col-md-4">
-  {{#if (eq isCurrentUser false)}}
-  <button type="button" href="#" class="btn btn-primary" rows="3">Following</button>
+  {{#if (eq isCurrentUser true)}}
+  <button type="button" href="#" class="btn btn-primary" rows="3">Edit Profile</button>
   {{/if}}
 </div>

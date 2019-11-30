@@ -19,7 +19,7 @@ describe('# tweet request', () => {
           .get('/tweets')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             return done();
           });
@@ -43,7 +43,7 @@ describe('# tweet request', () => {
           .get('/tweets')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.text.should.include('User1 的 Tweet1');
             res.text.should.include('User1 的 Tweet2');
@@ -68,7 +68,8 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ dataValues: { id: 1, Followings: [] } });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
+
         await db.User.create({});
         await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet1' });
         await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet2' });
@@ -79,7 +80,7 @@ describe('# tweet request', () => {
           .send('description=description')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -100,7 +101,7 @@ describe('# tweet request', () => {
     });
 
     describe('when failed without login', () => {
-      before(async () => { });
+      before(async () => {});
 
       it('will redirect index', done => {
         request(app)
@@ -108,13 +109,13 @@ describe('# tweet request', () => {
           .send('description=description')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
       });
 
-      after(async () => { });
+      after(async () => {});
     });
 
     describe('when failed without validation', () => {
@@ -124,7 +125,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
       });
       it('will redirect to index', done => {
@@ -135,7 +136,7 @@ describe('# tweet request', () => {
           )
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -164,7 +165,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
         await db.Tweet.create({ UserId: 1 });
       });
@@ -174,7 +175,7 @@ describe('# tweet request', () => {
           .post('/tweets/1/like')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -204,7 +205,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
         await db.Tweet.create({ UserId: 1, description: 'test' });
         await db.Like.create({ UserId: 1, TweetId: 1 });
@@ -215,7 +216,7 @@ describe('# tweet request', () => {
           .post('/tweets/1/unlike')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });

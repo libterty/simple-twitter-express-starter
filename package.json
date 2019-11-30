@@ -7,7 +7,7 @@
     "start": "node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
     "test": "cross-env NODE_ENV=test mocha test/*/*.js --exit --recursive --timeout 5000 && codecov",
-    "dev-test": "cross-env NODE_ENV=test mocha test/*/tweet.spec.js --exit --recursive --timeout 5000 && codecov",
+    "dev-test": "cross-env NODE_ENV=test mocha test/*/reply.spec.js --exit --recursive --timeout 5000 && codecov",
     "test-migrate": "cross-env NODE_ENV=test npx sequelize db:migrate",
     "lint": "eslint --format table --fix ."
   },

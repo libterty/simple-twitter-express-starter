@@ -2,6 +2,8 @@ const db = require('../models');
 const User = db.User;
 const Tweet = db.Tweet;
 const Reply = db.Reply;
+const Like = db.Like;
+const Followship = db.Followship;
 
 const tweetsController = {
   getTweets: async (req, res) => {
@@ -35,9 +37,11 @@ const tweetsController = {
 
       return res.render('tweets', {
         tweets: data,
-        users: usersData
+        users: usersData,
+        localUser: res.locals.user.dataValues
       });
     } catch (e) {
+      console.log(e);
       return res.status(400).render('404');
     }
   },
@@ -67,42 +71,84 @@ const tweetsController = {
   },
   getReplyTweets: async (req, res) => {
     let isCurrentUser;
+    let isLike = [];
+    let isFollowed = [];
     try {
+      // find tweet data
       const tweet = await Tweet.findOne({
         where: {
           id: req.params.tweet_id
         },
-        include: { model: Reply }
-      })
+        include: { model: User }
+      });
 
       if (!tweet) {
         req.flash('error_messages', 'tweet不存在');
         return res.redirect('back');
       }
+      const currentUser = Number(tweet.UserId);
+      // find sideNav data
       const user = await User.findOne({
         where: {
-          id: tweet.UserId
+          id: currentUser
         },
         include: { model: Tweet }
-      })
+      });
+
       const userTweets = await user.Tweets.map(r => ({
         ...r.dataValues
-      }))
+      }));
+      const totalLikes = await Like.findAll({
+        where: {
+          UserId: currentUser
+        }
+      }).then(d => d);
+      const totalFollowings = await Followship.findAll({
+        where: {
+          followerId: currentUser
+        }
+      }).then(d => d);
+      const totalFollowers = await Followship.findAll({
+        where: {
+          followingId: currentUser
+        }
+      }).then(d => d);
+      const followLists = res.locals.user.dataValues.Followings;
 
-      if (!user) { return res.redirect('back'); }
+      followLists.map(user => isFollowed.push(user.dataValues.id));
+
+      if (!user) {
+        return res.redirect('back');
+      }
+
       // check if is Current User
       if (req.user) {
-        req.user.id === Number(tweet.UserId)
+        req.user.id === currentUser
           ? (isCurrentUser = true)
           : (isCurrentUser = false);
       }
-      return res.render('reply', { tweet, user, isCurrentUser, userTweets })
+      // get all likeTweets in array
+      res.locals.user.dataValues.LikedTweets.map(tweet =>
+        isLike.push(tweet.dataValues.id)
+      );
+
+      return res.render('reply', {
+        tweet,
+        user,
+        isCurrentUser,
+        currentUser,
+        userTweets,
+        totalLikes,
+        totalFollowers,
+        totalFollowings,
+        isFollowed,
+        localUser: res.locals.user.dataValues,
+        isLike
+      });
     } catch (e) {
-      console.log(e)
-      res.status(400).render('404')
+      console.log('e', e);
+      res.status(400).render('404');
     }
-
-
   }
 };
 

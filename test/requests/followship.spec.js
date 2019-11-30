@@ -15,7 +15,7 @@ describe('# followship request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.destroy({ where: {}, truncate: true });
         await db.Followship.destroy({ where: {}, truncate: true });
         await db.User.create({});
@@ -24,10 +24,9 @@ describe('# followship request', () => {
 
       it('can not follow self', done => {
         request(app)
-          .post('/followships')
-          .send('id=1')
+          .post('/followships/1')
           .set('Accept', 'application/json')
-          .expect(200)
+          .expect(302)
           .end(function(err, res) {
             if (err) return done(err);
             db.User.findByPk(1, {
@@ -44,8 +43,7 @@ describe('# followship request', () => {
 
       it('will show followings', done => {
         request(app)
-          .post('/followships')
-          .send('id=2')
+          .post('/followships/2')
           .set('Accept', 'application/json')
           .expect(302)
           .end(function(err, res) {
@@ -79,7 +77,7 @@ describe('# followship request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.destroy({ where: {}, truncate: true });
         await db.Followship.destroy({ where: {}, truncate: true });
         await db.User.create({});
