@@ -119,8 +119,6 @@ const userController = {
           const totalFollowers = res.locals.user.dataValues.Followers.length;
           const totalFollowings = res.locals.user.dataValues.Followings.length;
 
-          console.log(res.locals.user.dataValues);
-
           return res.render('dashboard', {
             user,
             userTweets,
@@ -326,8 +324,6 @@ const userController = {
   },
 
   addFollowing: async (req, res) => {
-    console.log('res.locals.user.dataValues.id', res.locals.user.dataValues.id);
-    console.log('req.params.followingId', req.params.followingId);
     if (res.locals.user.dataValues.id === Number(req.params.followingId)) {
       req.flash('error_messages', 'Bad Request!');
       return res.redirect('back');
@@ -400,6 +396,46 @@ const userController = {
           });
       });
     }
+  },
+
+  getTopFollowers: (req, res) => {
+    let isCurrentUser;
+    // let isLike = [];
+    let isFollowed = [];
+    let currentUser = Number(req.params.id);
+    return User.findAll({
+      include: [{ model: User, as: 'Followers' }]
+    }).then(userLists => {
+      userLists = userLists.map(user => ({
+        ...user.dataValues,
+        FollowerCount: res.locals.user.dataValues.Followers.length
+      }));
+      userLists = userLists.sort((a, b) => b.FollowerCount - a.FollowerCount);
+      console.log('userLists log', res.locals.user.dataValues);
+      // get all following Users in an array
+      const followLists = res.locals.user.dataValues.Followings;
+      followLists.map(user => {
+        isFollowed.push(user.dataValues.id);
+      });
+      if (req.user) {
+        req.user.id === Number(req.params.id)
+          ? (isCurrentUser = true)
+          : (isCurrentUser = false);
+      }
+      const totalLikes = res.locals.user.dataValues.LikedTweets.length;
+      const totalFollowers = res.locals.user.dataValues.Followers.length;
+      const totalFollowings = res.locals.user.dataValues.Followings.length;
+      return res.render('usersFollowers', {
+        user: res.locals.user.dataValues,
+        userLists,
+        isCurrentUser,
+        isFollowed,
+        currentUser,
+        totalLikes,
+        totalFollowers,
+        totalFollowings
+      });
+    });
   }
 };
 

@@ -21,6 +21,8 @@ module.exports = {
    * @return {Boolean}
    */
   isLikedTweets: function(arr, id) {
+    console.log('arr log', arr);
+    console.log('id log', id);
     if (arr.indexOf(id) !== -1) {
       // already add like
       return true;

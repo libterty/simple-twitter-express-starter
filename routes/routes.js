@@ -58,6 +58,12 @@ router.get('/logout', userController.logout);
 router.get('/users/:id/tweets', authenticated, userController.getDashboard);
 // Get edit user profile
 router.get('/users/:id/edit', authenticatedUser, userController.getUser);
+// Get users Followers page
+router.get(
+  '/users/:id/followers',
+  authenticated,
+  userController.getTopFollowers
+);
 // post edit user profile
 router.post(
   '/users/:id/edit',
