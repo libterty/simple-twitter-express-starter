@@ -118,14 +118,18 @@ const userController = {
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           // get all likeTweets in array
-          res.locals.user.dataValues.LikedTweets.map(tweet =>
-            isLike.push(tweet.dataValues.id)
-          );
+          if (res.locals.user.dataValues.LikedTweets) {
+            res.locals.user.dataValues.LikedTweets.map(tweet =>
+              isLike.push(tweet.dataValues.id)
+            );
+          }
           // get all following Users in an array
           const followLists = res.locals.user.dataValues.Followings;
-          followLists.map(user => {
-            isFollowed.push(user.dataValues.id);
-          });
+          if (followLists) {
+            followLists.map(user => {
+              isFollowed.push(user.dataValues.id);
+            });
+          }
 
           return res.render('dashboard', {
             user,
@@ -148,7 +152,12 @@ const userController = {
   // Get /users/:id/edit頁面
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return user ? res.render('usersEdit', { user, localUser: res.locals.user.dataValues, }) : res.render('404');
+      return user
+        ? res.render('usersEdit', {
+            user,
+            localUser: res.locals.user.dataValues
+          })
+        : res.render('404');
     });
   },
   // Post /users/:id/edit功能
@@ -254,7 +263,7 @@ const userController = {
               // Transaction需要處理高併發
               tweet
                 .increment('likeCounts')
-                .then(tweet => {
+                .then(() => {
                   req.flash('success_messages', '新增你的按讚！！');
                   return res.redirect('back');
                 })
@@ -408,22 +417,25 @@ const userController = {
   },
 
   getTopFollowers: (req, res) => {
-    let isCurrentUser;
     let isFollowed = [];
     let currentUser = Number(req.params.id);
 
     return User.findByPk(req.params.id).then(user => {
       if (user) {
         Tweet.findAll().then(async tweets => {
+          // return length
           const totalLikes = await Like.findAll({
             where: { UserId: req.params.id }
           }).then(usersId => usersId);
+          // return length
           const totalFollowings = await Followship.findAll({
             where: { followerId: req.params.id }
           }).then(usersId => usersId);
+          // return length
           const totalFollowers = await Followship.findAll({
             where: { followingId: req.params.id }
           }).then(usersId => usersId);
+          // Check followings
           const followLists = res.locals.user.dataValues.Followings;
           let userTweets = [];
           // filtering the equivalent user
@@ -432,27 +444,47 @@ const userController = {
               userTweets.push(tweet.dataValues);
             }
           });
-          // check if is Current User
-          if (req.user) {
-            req.user.id === Number(req.params.id)
-              ? (isCurrentUser = true)
-              : (isCurrentUser = false);
-          }
           // get all following Users in an array
-          followLists.map(user => {
-            isFollowed.push(user.dataValues.id);
-          });
-
-          return res.render('usersFollowers', {
-            user,
-            localUser: res.locals.user.dataValues,
-            userTweets,
-            isCurrentUser,
-            isFollowed,
-            currentUser,
-            totalLikes,
-            totalFollowers,
-            totalFollowings
+          if (followLists) {
+            followLists.map(user => {
+              isFollowed.push(user.dataValues.id);
+            });
+          }
+          let tFollowers = totalFollowers.map(
+            item => item.dataValues.followerId
+          );
+          User.findAll({
+            where: {
+              id: {
+                [Op.in]: tFollowers
+              }
+            }
+          }).then(followers => {
+            followers = followers
+              .map(f => ({
+                ...f.dataValues,
+                followOrder: totalFollowers
+                  .filter(i => i.dataValues)
+                  .find(item => item.followerId == f.dataValues.id).createdAt
+              }))
+              .sort(
+                (a, b) =>
+                  new Date(b.followOrder).getTime() -
+                  new Date(a.followOrder).getTime()
+              );
+            console.log('followers', followers);
+            return res.render('usersFollowers', {
+              user,
+              localUser: res.locals.user.dataValues,
+              followers,
+              userTweets,
+              isCurrentUser: res.locals.user.dataValues.id,
+              isFollowed,
+              currentUser,
+              totalLikes,
+              totalFollowers,
+              totalFollowings
+            });
           });
         });
       } else {

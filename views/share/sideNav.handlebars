@@ -14,8 +14,10 @@
                 <small>{{postLength totalFollowings}}</small>
             </li>
             <li class="list-group-item">
-                <strong>Follower : </strong>
-                <small>{{postLength totalFollowers}}</small>
+                <a href="/users/{{user.id}}/followers">
+                    <strong>Follower : </strong>
+                    <small>{{postLength totalFollowers}}</small>
+                </a>
             </li>
             <li class="list-group-item">
                 <strong>Like : </strong>
