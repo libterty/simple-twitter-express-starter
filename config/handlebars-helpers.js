@@ -2,17 +2,20 @@
 const moment = require('moment');
 
 module.exports = {
-  moment: function(a) {
+  moment: function (a) {
     return moment(a).fromNow();
   },
-  replace: function(a) {
+  replace: function (a) {
     if (!a) return 'New User';
     return a.replace(/@example.com/g, '');
   },
-  postLength: function(a) {
+  postLength: function (a) {
     return a.length;
   },
-  reduceLength: function(a) {
+  reduceLength: function (a) {
     return a.substring(0, 50);
+  },
+  remainLength: function (a) {
+    return a.substring(50)
   }
 };
