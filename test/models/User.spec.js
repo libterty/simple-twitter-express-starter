@@ -60,24 +60,24 @@ describe('# User Model', () => {
   });
 
   context('action', () => {
-    let data = null;
+    let data = { id: 1 };
 
     it('create', done => {
       db.User.create({}).then(user => {
-        data = user;
+        expect(user.dataValues).not.to.be.undefined;
         done();
       });
     });
     it('read', done => {
       db.User.findByPk(data.id).then(user => {
-        expect(data.id).to.be.equal(user.id);
+        expect(data.id).to.be.equal(user.dataValues.id);
         done();
       });
     });
     it('update', done => {
       db.User.update({}, { where: { id: data.id } }).then(() => {
         db.User.findByPk(data.id).then(user => {
-          expect(data.updatedAt).to.be.not.equal(user.updatedAt);
+          expect(data.updatedAt).to.be.not.equal(user.dataValues.updatedAt);
           done();
         });
       });
