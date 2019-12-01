@@ -468,7 +468,7 @@ const userController = {
                   .find(item => item.followerId == f.dataValues.id).id
               }))
               .sort((a, b) => b.followOrder - a.followOrder);
-            console.log('followers', followers);
+
             return res.render('usersFollowers', {
               user,
               localUser: res.locals.user.dataValues,
@@ -541,8 +541,7 @@ const userController = {
                   .find(item => item.followingId == f.dataValues.id).id
               }))
               .sort((a, b) => b.followOrder - a.followOrder);
-            // console.log('totalFollowings', totalFollowings);
-            console.log('followings log', followings);
+
             return res.render('usersFollowings', {
               user,
               localUser: res.locals.user.dataValues,
