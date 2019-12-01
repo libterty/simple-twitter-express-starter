@@ -619,7 +619,7 @@ const userController = {
                   .find(item => item.TweetId === t.dataValues.id).id
               }))
               .sort((a, b) => b.followOrder - a.followOrder);
-            console.log('tweets log', tweets);
+
             return res.render('usersLikes', {
               user,
               localUser: res.locals.user.dataValues,

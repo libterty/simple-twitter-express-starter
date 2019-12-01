@@ -233,14 +233,14 @@ describe('# user request', () => {
     });
   });
 
-  context.skip('#likes', () => {
+  context('#likes', () => {
     before(async () => {
       this.ensureAuthenticated = sinon
         .stub(helpers, 'ensureAuthenticated')
         .returns(true);
       this.getUser = sinon
         .stub(helpers, 'getUser')
-        .returns({ id: 1, Followings: [] });
+        .returns({ dataValues: { id: 1 }, Followings: [] });
       await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'Tweet1' });
       await db.Like.create({ UserId: 1, TweetId: 1 });
