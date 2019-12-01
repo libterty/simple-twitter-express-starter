@@ -17,9 +17,8 @@
         <span class="text-muted"> ‧ {{moment tweet.updatedAt}}</span>
         <p class="card-text">{{tweet.description}}</p>
         <div class="row">
-          <a href="/tweets/{{tweet.id}}/replies" class="mr-3 btn btn-default bg-white text-primary border-0 ">Reply
+          <a href="#tweet" class="mr-3 btn btn-default bg-white text-primary border-0 ">Reply
             <small>({{postLength replies}})</small></a>
-          {{!-- TODO: add like links --}}
           {{#if (eq (isLikedTweets isLike tweet.id) true)}}
           <form action="/tweets/{{tweet.id}}/unlike" method="POST"><button type="submit"
               class="btn btn-default bg-white text-danger border-0"><i
@@ -36,7 +35,6 @@
     </div>
   </div>
   <h3 class="my-3">Replies</h3>
-  {{!-- TODO: replies not yet --}}
   <div class="py-5">
     {{#each replies}}
     <div class="card flex-row mb-2">
@@ -58,9 +56,9 @@
     {{/each}}
   </div>
   <div class="mb-5">
-    <form accept-charset="UTF-8" class="" action="" method="POST">
+    <form accept-charset="UTF-8" class="" action="/tweets/{{tweet.id}}/replies" method="POST">
       <textarea class="form-control animated fadeIn" minlength="1" maxlength="140" id="tweet"
-        placeholder="Type in your message" rows="5" name="description" spellcheck="true" required
+        placeholder="Type in your message" rows="5" name="comment" spellcheck="true"
         oninput="countCharacters()"></textarea>
       <h6 id="charactersRemaining" class="text-muted">140 characters remaining</h6>
       <button class="btn btn-primary px-3 float-right my-3" type="submit">Reply</button>

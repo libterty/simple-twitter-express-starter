@@ -49,11 +49,11 @@ const tweetsController = {
 
     try {
       if (!description) {
-        req.flash('error_messages', '字數需大於0');
+        req.flash('remind_messages', '字數需大於0');
         return res.redirect('/');
       }
       if (description.length > 140) {
-        req.flash('error_messages', '字數需低於140');
+        req.flash('remind_messages', '字數需低於140');
         return res.redirect('/');
       }
 
@@ -170,7 +170,31 @@ const tweetsController = {
         isLike
       });
     } catch (e) {
-      res.status(400).render('404');
+      return res.status(400).render('404');
+    }
+  },
+  addReply: async (req, res) => {
+    const { comment } = req.body
+    try {
+      if (!comment || comment.length === 0) {
+        req.flash('error_messages', '字數需大於0');
+        return res.redirect('back')
+      }
+      if (comment.length > 140) {
+        req.flash('error_messages', '字數需低於140');
+        return res.redirect('back')
+      }
+
+      const reply = await Reply.create({
+        UserId: res.locals.user.dataValues.id,
+        TweetId: req.params.tweet_id,
+        comment
+      })
+      await reply.save()
+      return res.redirect('back');
+    } catch (e) {
+      console.log(e)
+      return res.status(400).render('404')
     }
   }
 };
