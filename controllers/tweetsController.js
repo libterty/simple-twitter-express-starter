@@ -80,20 +80,43 @@ const tweetsController = {
           id: req.params.tweet_id
         },
         include: { model: User }
-      });
+      }).then(d => d);
 
       if (!tweet) {
         req.flash('error_messages', 'tweet不存在');
         return res.redirect('back');
       }
       const currentUser = Number(tweet.UserId);
+      // reply
+      const replies = await Reply.findAll({
+        where: {
+          TweetId: req.params.tweet_id
+        },
+        include: [{ model: User }, { model: Tweet }]
+      }).then(d => d);
+      const replyData = await replies.map(r => ({
+        ...r.dataValues,
+        User: {
+          id: r.User.dataValues.id,
+          name: r.User.dataValues.name,
+          avatar: r.User.dataValues.avatar
+            ? r.User.dataValues.avatar
+            : 'https://via.placeholder.com/300',
+          isAdmin: r.User.dataValues.isAdmin
+        },
+        Tweet: {
+          id: r.Tweet.dataValues.id,
+          likeCounts: r.Tweet.dataValues.likeCounts
+        }
+      }));
+
       // find sideNav data
       const user = await User.findOne({
         where: {
           id: currentUser
         },
         include: { model: Tweet }
-      });
+      }).then(d => d);
 
       const userTweets = await user.Tweets.map(r => ({
         ...r.dataValues
@@ -128,12 +151,15 @@ const tweetsController = {
           : (isCurrentUser = false);
       }
       // get all likeTweets in array
-      res.locals.user.dataValues.LikedTweets.map(tweet =>
-        isLike.push(tweet.dataValues.id)
-      );
+      res.locals.user.dataValues.LikedTweets.map(tweet => {
+        return isLike.push(tweet.dataValues.id);
+      });
+      console.log(res.locals.user.dataValues);
+      console.log('isLike array: ', isLike);
 
       return res.render('reply', {
         tweet,
+        replies: replyData,
         user,
         isCurrentUser,
         currentUser,
@@ -146,7 +172,7 @@ const tweetsController = {
         isLike
       });
     } catch (e) {
-      console.log('e', e);
+      console.log('getTweets e', e);
       res.status(400).render('404');
     }
   }

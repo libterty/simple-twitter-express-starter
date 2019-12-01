@@ -127,7 +127,6 @@ const userController = {
             isFollowed.push(user.dataValues.id);
           });
 
-
           return res.render('dashboard', {
             user,
             localUser: res.locals.user.dataValues,
@@ -149,7 +148,12 @@ const userController = {
   // Get /users/:id/edit頁面
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return user ? res.render('usersEdit', { user, localUser: res.locals.user.dataValues, }) : res.render('404');
+      return user
+        ? res.render('usersEdit', {
+            user,
+            localUser: res.locals.user.dataValues
+          })
+        : res.render('404');
     });
   },
   // Post /users/:id/edit功能
