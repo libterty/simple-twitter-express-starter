@@ -80,7 +80,6 @@ router.post(
 // post like/unlike
 router.post('/tweets/:id/like', authenticated, userController.addLike);
 router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
-
 // tweets GET, POST
 router.get('/tweets', authenticated, tweetsController.getTweets);
 router.post('/tweets', authenticated, tweetsController.addTweet);
@@ -89,7 +88,6 @@ router.get(
   authenticated,
   tweetsController.getReplyTweets
 );
-
 // POST DELETE /followships/:id
 router.post(
   '/followships/:followingId',
@@ -101,4 +99,6 @@ router.delete(
   authenticated,
   userController.removeFollowing
 );
+// User Likes page
+router.get('/users/:id/likes', authenticated, userController.getLikes);
 module.exports = router;

@@ -154,7 +154,6 @@ const tweetsController = {
         return isLike.push(tweet.dataValues.id);
       });
 
-
       return res.render('reply', {
         tweet,
         replies: replyData,
