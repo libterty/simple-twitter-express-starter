@@ -41,7 +41,6 @@ const tweetsController = {
         localUser: res.locals.user.dataValues
       });
     } catch (e) {
-      console.log(e);
       return res.status(400).render('404');
     }
   },
@@ -154,8 +153,7 @@ const tweetsController = {
       res.locals.user.dataValues.LikedTweets.map(tweet => {
         return isLike.push(tweet.dataValues.id);
       });
-      console.log(res.locals.user.dataValues);
-      console.log('isLike array: ', isLike);
+
 
       return res.render('reply', {
         tweet,
@@ -172,7 +170,6 @@ const tweetsController = {
         isLike
       });
     } catch (e) {
-      console.log('getTweets e', e);
       res.status(400).render('404');
     }
   }

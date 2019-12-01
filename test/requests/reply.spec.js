@@ -11,32 +11,28 @@ describe('# reply request', () => {
   context('#index', () => {
     describe('GET /tweets/:id/replies', () => {
       before(async () => {
-        try {
-          this.ensureAuthenticated = sinon
-            .stub(helpers, 'ensureAuthenticated')
-            .returns(true);
-          this.getUser = sinon.stub(helpers, 'getUser').returns({
-            dataValues: { id: 1, Followings: [], LikedTweets: [] }
-          });
+        this.ensureAuthenticated = sinon
+          .stub(helpers, 'ensureAuthenticated')
+          .returns(true);
+        this.getUser = sinon.stub(helpers, 'getUser').returns({
+          dataValues: { id: 1, Followings: [], LikedTweets: [] }
+        });
 
-          await db.User.destroy({ where: {}, truncate: true });
-          await db.Tweet.destroy({ where: {}, truncate: true });
-          await db.Reply.destroy({ where: {}, truncate: true });
-          await db.Followship.destroy({ where: {}, truncate: true });
-          await db.Like.destroy({ where: {}, truncate: true });
-
-          await db.User.create({});
-          await db.Tweet.create({ UserId: 1, description: 'test' });
-          await db.Reply.create({
-            UserId: 1,
-            TweetId: 1,
-            comment: 'Tweet1 的 comment'
-          });
-          await db.Followship.create({});
-          await db.Like.create({});
-        } catch (e) {
-          console.log('reply request before:', e);
-        }
+        await db.User.destroy({ where: {}, truncate: true });
+        await db.Tweet.destroy({ where: {}, truncate: true });
+        await db.Reply.destroy({ where: {}, truncate: true });
+        await db.Followship.destroy({ where: {}, truncate: true });
+        await db.Like.destroy({ where: {}, truncate: true });
+        // add user.introduction data if you use sideNav partial
+        await db.User.create({ id: 1, introduction: '' });
+        await db.Tweet.create({ UserId: 1, description: 'test' });
+        await db.Reply.create({
+          UserId: 1,
+          TweetId: 1,
+          comment: 'Tweet1 的 comment'
+        });
+        await db.Followship.create({});
+        await db.Like.create({});
       });
 
       it('should render index', done => {
@@ -44,9 +40,7 @@ describe('# reply request', () => {
           .get('/tweets/1/replies')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
-            console.log('should render index err', err);
-            // console.log('should render index res', res);
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('Tweet1 的 comment');
             return done();
@@ -65,60 +59,60 @@ describe('# reply request', () => {
     });
   });
 
-  // context('#post', () => {
-  //   describe('POST /tweets/1/replies successfully', () => {
-  //     before(async () => {
-  //       this.ensureAuthenticated = sinon
-  //         .stub(helpers, 'ensureAuthenticated')
-  //         .returns(true);
-  //       this.getUser = sinon
-  //         .stub(helpers, 'getUser')
-  //         .returns({ dataValues: { id: 1, Followings: [], LikedTweets: [] } });
-  //       await db.User.create({});
-  //       await db.Tweet.create({ UserId: 1, description: 'test' });
-  //     });
+  context.skip('#post', () => {
+    describe('POST /tweets/1/replies successfully', () => {
+      before(async () => {
+        this.ensureAuthenticated = sinon
+          .stub(helpers, 'ensureAuthenticated')
+          .returns(true);
+        this.getUser = sinon
+          .stub(helpers, 'getUser')
+          .returns({ dataValues: { id: 1, Followings: [], LikedTweets: [] } });
+        await db.User.create({});
+        await db.Tweet.create({ UserId: 1, description: 'test' });
+      });
 
-  //     it('will redirect to index', done => {
-  //       request(app)
-  //         .post('/tweets/1/replies')
-  //         .set('Accept', 'application/json')
-  //         .expect(302)
-  //         .end(function (err, res) {
-  //           if (err) return done(err);
-  //           return done();
-  //         });
-  //     });
-  //     it('when successfully save', done => {
-  //       db.Reply.findOne({ where: { UserId: 1 } }).then(reply => {
-  //         expect(reply).to.not.be.null;
-  //         done();
-  //       });
-  //     });
+      it('will redirect to index', done => {
+        request(app)
+          .post('/tweets/1/replies')
+          .set('Accept', 'application/json')
+          .expect(302)
+          .end(function (err, res) {
+            if (err) return done(err);
+            return done();
+          });
+      });
+      it('when successfully save', done => {
+        db.Reply.findOne({ where: { UserId: 1 } }).then(reply => {
+          expect(reply).to.not.be.null;
+          done();
+        });
+      });
 
-  //     after(async () => {
-  //       this.ensureAuthenticated.restore();
-  //       this.getUser.restore();
-  //       await db.User.destroy({ where: {}, truncate: true });
-  //       await db.Tweet.destroy({ where: {}, truncate: true });
-  //       await db.Reply.destroy({ where: {}, truncate: true });
-  //     });
-  //   });
+      after(async () => {
+        this.ensureAuthenticated.restore();
+        this.getUser.restore();
+        await db.User.destroy({ where: {}, truncate: true });
+        await db.Tweet.destroy({ where: {}, truncate: true });
+        await db.Reply.destroy({ where: {}, truncate: true });
+      });
+    });
 
-  //   describe('POST /tweets/1/replies fail', () => {
-  //     before(async () => { });
+    describe('POST /tweets/1/replies fail', () => {
+      before(async () => { });
 
-  //     it('will redirect index', done => {
-  //       request(app)
-  //         .post('/tweets/1/replies')
-  //         .set('Accept', 'application/json')
-  //         .expect(302)
-  //         .end(function (err, res) {
-  //           if (err) return done(err);
-  //           return done();
-  //         });
-  //     });
+      it('will redirect index', done => {
+        request(app)
+          .post('/tweets/1/replies')
+          .set('Accept', 'application/json')
+          .expect(302)
+          .end(function (err, res) {
+            if (err) return done(err);
+            return done();
+          });
+      });
 
-  //     after(async () => { });
-  //   });
-  // });
+      after(async () => { });
+    });
+  });
 });
