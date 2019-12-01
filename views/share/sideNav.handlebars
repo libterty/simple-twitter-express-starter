@@ -10,16 +10,20 @@
                 <small>{{postLength userTweets}}</small>
             </li>
             <li class="list-group-item">
-                <strong>Following : </strong>
-                <small>14</small>
+                <a href="/users/{{user.id}}/followings">
+                    <strong>Following : </strong>
+                    <small>{{postLength totalFollowings}}</small>
+                </a>
             </li>
             <li class="list-group-item">
-                <strong>Follower : </strong>
-                <small>10</small>
+                <a href="/users/{{user.id}}/followers">
+                    <strong>Follower : </strong>
+                    <small>{{postLength totalFollowers}}</small>
+                </a>
             </li>
             <li class="list-group-item">
                 <strong>Like : </strong>
-                <small>23</small>
+                <small>{{postLength totalLikes}}</small>
             </li>
         </ul>
         <br>
@@ -27,7 +31,16 @@
             <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit Profile</a>
         {{/if}}
         {{#if (eq isCurrentUser false)}}
-            <button type="button" href="#" class="btn btn-primary" rows="3">Following</button>
+            {{#if (eq (isLikedTweets isFollowed currentUser ) true)}}
+            <form action="/followships/{{user.id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn btn-danger">取消追蹤</button>
+            </form>
+            {{/if}}
+            {{#if (eq (isLikedTweets isFollowed currentUser ) false)}}
+            <form action="/followships/{{user.id}}" method="POST">
+                <button type="submit" class="btn btn-primary">追蹤</button>
+            </form>
+            {{/if}}
         {{/if}}
     </div>
 </div>

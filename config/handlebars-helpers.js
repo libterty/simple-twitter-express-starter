@@ -10,9 +10,38 @@ module.exports = {
     return a.replace(/@example.com/g, '');
   },
   postLength: function(a) {
+    if (!a) return 0;
     return a.length;
   },
   reduceLength: function(a) {
     return a.substring(0, 50);
+  },
+  /**
+   * @param {array} tweetId
+   * @param {number} tweetId
+   * @return {Boolean}
+   */
+  isLikedTweets: function(arr, id) {
+    if (arr.indexOf(id) !== -1) {
+      // already add like
+      return true;
+    } else {
+      // unlike
+      return false;
+    }
+  },
+  /**
+   * @param {array} followingid
+   * @param {number} params.id
+   * @return {Boolean}
+   */
+  isFollowingUser: function(arr, id) {
+    if (arr.indexOf(id) !== -1) {
+      // already add like
+      return true;
+    } else {
+      // unlike
+      return false;
+    }
   }
 };

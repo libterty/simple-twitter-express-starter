@@ -4,6 +4,7 @@ const router = express.Router();
 const upload = multer({ dest: 'temp/' });
 const passport = require('../config/passport');
 const userController = require('../controllers/userController.js');
+const tweetsController = require('../controllers/tweetsController.js');
 const helpers = require('../_helpers');
 
 // authentication function
@@ -37,7 +38,7 @@ const authenticatedAdmin = (req, res, next) => {
   res.redirect('/signin');
 };
 
-// TODO: root
+// root
 router.get('/', authenticated, (req, res) => res.redirect(302, '/tweets'));
 
 // user signIn, register, logout
@@ -53,15 +54,46 @@ router.post(
   userController.signIn
 );
 router.get('/logout', userController.logout);
-
+// Get user profile
 router.get('/users/:id/tweets', authenticated, userController.getDashboard);
-
+// Get edit user profile
 router.get('/users/:id/edit', authenticatedUser, userController.getUser);
+// Get users Followers page
+router.get(
+  '/users/:id/followers',
+  authenticated,
+  userController.getTopFollowers
+);
+// Get users Followings page
+router.get(
+  '/users/:id/followings',
+  authenticated,
+  userController.getTopFollowings
+);
+// post edit user profile
 router.post(
   '/users/:id/edit',
   authenticatedUser,
   upload.single('avatar'),
   userController.putUser
 );
+// post like/unlike
+router.post('/tweets/:id/like', authenticated, userController.addLike);
+router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
 
+// tweets GET, POST
+router.get('/tweets', authenticated, tweetsController.getTweets);
+router.post('/tweets', authenticated, tweetsController.addTweet);
+
+// POST DELETE /followships/:id
+router.post(
+  '/followships/:followingId',
+  authenticated,
+  userController.addFollowing
+);
+router.delete(
+  '/followships/:followingId',
+  authenticated,
+  userController.removeFollowing
+);
 module.exports = router;

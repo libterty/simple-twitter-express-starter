@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
   <style>
     form {
       padding-left: 0.25rem;
@@ -38,6 +39,7 @@
       margin-left: 2%;
     }
 
+
     img.user-Profile-avatar {
       height: auto;
       width: 50%;
@@ -48,38 +50,95 @@
       display: flex;
       flex-flow: column nowrap;
     }
+
+    .media-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+    }
+
+
+    textarea {
+      min-width: 100%;
+      max-width: 100%;
+      min-height: 50px;
+      max-height: 100px;
+      resize: none;
+    }
+
+    textarea.form-control:focus {
+      border-radius: 0;
+      box-shadow: none;
+      border-bottom: 2px solid #eee;
+    }
+
+    .form-control {
+      padding: 5px 10px;
+      font-size: 14px;
+      border: none;
+      border-bottom: 2px solid #eee;
+    }
+
+    .card-body a {
+      text-decoration: none;
+    }
+
+    .inner-body {
+      display: flex;
+      flex-flow: row nowrap;
+    }
+
+    .inner-body-link {
+      margin-top: 0.14rem;
+    }
+
+    .inner-body-form {
+      margin-bottom: 0.25rem;
+    }
   </style>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Twitter</a>
-    <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
-      <ul class="navbar-nav mr-auto">
+  <nav class="navbar fixed-top navbar-expand-lg navbar-primary bg-primary">
+    <a class="navbar-brand text-light" href="/">Twitter </a> <button class="navbar-toggler" type="button"
+      data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"><i class="text-light fas fa-bars"></i></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          {{#if localUser.isAdmin}}
+          <a href="/admin" class="btn btn-primary" style="color: white;margin-right: 10px;">前往後台</a>
+          {{/if}}
+          {{#if localUser}}
+          <span style="color: white;margin-right: 10px;">Hi, {{replace localUser.email}}</span>
+          <a href="/users/{{localUser.id}}" class="btn btn-primary" style="color: white;margin-right: 10px;"><img
+              src="{{localUser.avatar}}" class="media-avatar" alt="avatar" style=" width: 30px; height: 30px;"></a>
+          <a href="/logout"><button class="btn btn-primary"
+              class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
+          {{/if}}
+        </li>
       </ul>
-      <div>
-        {{#if user.isAdmin}}
-        <a href="/admin" style="color: white;margin-right: 10px;">前往後台</a>
-        {{/if}}
-        {{#if user}}
-        <span style="color: white;margin-right: 10px;">Hi, {{replace user.email}}</span>
-        <a href="/users/{{user.id}}" style="color: white;margin-right: 10px;">Profile</a>
-        <a href="/logout"><button class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
-        {{/if}}
-      </div>
     </div>
   </nav>
   <br />
   <main role="main">
-    <div class="album py-5 bg-light">
+    <div class="album py-5">
       <div class="container">
         {{#if success_messages}}
         <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
           {{success_messages}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
         {{/if}}
         {{#if error_messages}}
         <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
           {{error_messages}}
         </div>
         {{/if}}
@@ -94,5 +153,19 @@
   integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
   integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script>
+  function countCharacters() {
+    let textEntered, countRemaining, counter;
+    textEntered = document.getElementById('tweet').value;
+    counter = (140 - (textEntered.length))
+    countRemaining = document.getElementById('charactersRemaining');
+    if (counter === 0) {
+      countRemaining.className = "text-danger"
+    } else {
+      countRemaining.className = "text-muted"
+    }
+    countRemaining.textContent = `${counter} characters remaining`;
+  }
+</script>
 
 </html>

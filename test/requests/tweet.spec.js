@@ -68,8 +68,10 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
+        await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet1' });
+        await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet2' });
       });
       it('will redirect to index', done => {
         request(app)
@@ -83,7 +85,7 @@ describe('# tweet request', () => {
           });
       });
       it('will create current users tweet', done => {
-        db.Tweet.findOne({ where: { userId: 1 } }).then(tweet => {
+        db.Tweet.findOne({ where: { UserId: 1 } }).then(tweet => {
           expect(tweet).to.not.be.null;
           done();
         });
@@ -122,7 +124,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
       });
       it('will redirect to index', done => {
@@ -162,7 +164,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
         await db.Tweet.create({ UserId: 1 });
       });
@@ -178,7 +180,7 @@ describe('# tweet request', () => {
           });
       });
       it('will save like', done => {
-        db.Like.findOne({ where: { userId: 1 } }).then(like => {
+        db.Like.findOne({ where: { UserId: 1 } }).then(like => {
           expect(like).to.not.be.null;
           done();
         });
@@ -202,7 +204,7 @@ describe('# tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ dataValues: { id: 1 }, Followings: [] });
         await db.User.create({});
         await db.Tweet.create({ UserId: 1, description: 'test' });
         await db.Like.create({ UserId: 1, TweetId: 1 });

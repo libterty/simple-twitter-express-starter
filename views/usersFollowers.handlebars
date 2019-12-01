@@ -1,0 +1,44 @@
+<br>
+<br>
+<div class="row">
+    {{> sideNav}}
+    <div class="col-md-8">
+        {{#each followers}}
+        <div class="card mb-3">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="{{this.avatar}}" class="card-img" alt="{{this.name}}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body outer-body">
+                        <div class="card-body">
+                            <a href="/users/{{this.id}}/tweets" class="card-link"><strong>{{this.name}}</strong></a>
+                        </div>
+                        <p class="card-text">{{this.introduction}}</p>
+                        <div class="card-body inner-body">
+                            {{#if (eq ../isCurrentUser this.id)}}
+                                <button type="button" href="/users/{{this.id}}/edit" class="btn btn-link">Edit Profile</button>
+                            {{/if}}
+                            {{#if (neq ../isCurrentUser this.id)}}
+                                {{#if (eq (isLikedTweets ../isFollowed this.id ) true)}}
+                                <form action="/followships/{{this.id}}?_method=DELETE" method="POST">
+                                    <button type="submit" class="btn btn-danger">取消追蹤</button>
+                                </form>
+                                {{/if}}
+                                {{#if (eq (isLikedTweets ../isFollowed this.id ) false)}}
+                                <form action="/followships/{{this.id}}" method="POST">
+                                    <button type="submit" class="btn btn-primary">追蹤</button>
+                                </form>
+                                {{/if}}
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+<br />
+<br />
+<a href="javascript:history.back()">回上一頁</a>
