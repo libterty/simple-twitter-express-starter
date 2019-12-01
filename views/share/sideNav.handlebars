@@ -1,46 +1,51 @@
-<div class="col-md-4">
-    <img src="{{user.avatar}}" class="card-img-top" alt="{{user.name}}">
-    <div class="card-body">
-        <h5 class="card-title" style="text-align: center;">{{user.name}}</h5>
-        <p class="card-text">{{user.introduction}}</p>
-        <br>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <strong>Tweets : </strong>
-                <small>{{postLength userTweets}}</small>
-            </li>
-            <li class="list-group-item">
-                <a href="/users/{{user.id}}/followings">
-                    <strong>Following : </strong>
-                    <small>{{postLength totalFollowings}}</small>
-                </a>
-            </li>
-            <li class="list-group-item">
-                <a href="/users/{{user.id}}/followers">
-                    <strong>Follower : </strong>
-                    <small>{{postLength totalFollowers}}</small>
-                </a>
-            </li>
-            <li class="list-group-item">
-                <strong>Like : </strong>
-                <small>{{postLength totalLikes}}</small>
-            </li>
-        </ul>
-        <br>
-        {{#if (eq isCurrentUser true)}}
-            <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit Profile</a>
-        {{/if}}
-        {{#if (eq isCurrentUser false)}}
-            {{#if (eq (isLikedTweets isFollowed currentUser ) true)}}
-            <form action="/followships/{{user.id}}?_method=DELETE" method="POST">
-                <button type="submit" class="btn btn-danger">取消追蹤</button>
-            </form>
-            {{/if}}
-            {{#if (eq (isLikedTweets isFollowed currentUser ) false)}}
-            <form action="/followships/{{user.id}}" method="POST">
-                <button type="submit" class="btn btn-primary">追蹤</button>
-            </form>
-            {{/if}}
-        {{/if}}
+<div class="col-lg-4 mt-5">
+  <div class="card profile">
+    <div class="top-sec">
+      <img src="{{user.avatar}}">
     </div>
+    <div class="span4 collapse-group">
+      <div class="d-flex justify-content-around mb-2">
+        <h2 class="card-title">{{user.name}}</h2>
+        {{#if (eq isCurrentUser false)}}
+        {{#if (eq (isLikedTweets isFollowed currentUser) true)}}
+        <form action="/followships/{{user.id}}?_method=DELETE" method="POST">
+          <button type="submit" class="btn btn-danger ml-5">Following</button>
+        </form>
+        {{else}}
+        <form action="/followships/{{user.id}}" method="POST">
+          <button type="submit" class="btn btn-primary ml-5">Follow</button>
+        </form>
+        {{/if}}
+        {{/if}}
+      </div>
+      <div class="m-3">
+        <p>{{reduceLength user.introduction}}<span class="collapse" id="viewdetails3">
+            {{remainLength user.introduction}}</span> <a data-toggle="collapse" data-target="#viewdetails3">...<i
+              class="fas fa-angle-double-right"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card profile my-3">
+    <li class="list-group-item border-0">
+      <strong>{{postLength userTweets}}</strong>
+      <span class="text-muted font-weight-light">Tweets</span>
+    </li>
+    <li class="list-group-item border-0">
+      <strong>{{postLength totalFollowings}}</strong>
+      <span class="text-muted font-weight-light">Following</span>
+    </li>
+    <li class="list-group-item border-0">
+      <strong>{{postLength totalFollowers}}</strong>
+      <span class="text-muted font-weight-light">Followers</span>
+    </li>
+    <li class="list-group-item border-0">
+      <strong>{{postLength totalLikes}}</strong>
+      <span class="text-muted font-weight-light">Likes</span>
+    </li>
+  </div>
+  {{#if (eq isCurrentUser true)}}
+  <button type="button" href="#" class="btn btn-primary" rows="3">Edit Profile</button>
+  {{/if}}
 </div>
