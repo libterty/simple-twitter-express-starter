@@ -4,7 +4,6 @@ var chai = require('chai');
 var request = require('supertest');
 var sinon = require('sinon');
 var nanoid = require('nanoid');
-var delay = require('await-delay');
 var app = require('../../app');
 var helpers = require('../../_helpers');
 var should = chai.should();
@@ -23,8 +22,8 @@ describe('# user request', () => {
       await db.User.destroy({ where: {}, truncate: true });
       await db.Tweet.destroy({ where: {}, truncate: true });
 
-      await db.User.create({});
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
+      await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet' });
       await db.Tweet.create({ UserId: 2, description: 'User2 的 Tweet' });
     });
@@ -35,7 +34,7 @@ describe('# user request', () => {
           .get('/users/1/tweets')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('User1 的 Tweet');
             return done();
@@ -48,7 +47,7 @@ describe('# user request', () => {
           .get('/users/2/tweets')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('User2 的 Tweet');
             return done();
@@ -74,8 +73,8 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ dataValues: { id: 1 }, Followings: [] });
-      await db.User.create({});
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
+      await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet' });
       await db.Tweet.create({ UserId: 2, description: 'User2 的 Tweet' });
     });
@@ -86,7 +85,7 @@ describe('# user request', () => {
           .get('/users/1/edit')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             return done();
           });
@@ -96,7 +95,7 @@ describe('# user request', () => {
           .get('/users/2/edit')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             return done();
           });
@@ -119,7 +118,7 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ dataValues: { id: 1 }, Followings: [] });
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
     });
 
     describe('successfully update', () => {
@@ -129,7 +128,7 @@ describe('# user request', () => {
           .send({ name: 'abc', introduction: 'Hello World!' })
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             db.User.findByPk(1).then(user => {
               user.name.should.equal('abc');
@@ -155,9 +154,9 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ dataValues: { id: 1 }, Followings: [] });
-      await db.User.create({ name: 'User1' });
-      await db.User.create({ name: 'User2' });
-      await db.User.create({ name: 'User3' });
+      await db.User.create({ name: 'User1', introduction: '' });
+      await db.User.create({ name: 'User2', introduction: '' });
+      await db.User.create({ name: 'User3', introduction: '' });
 
       const date = new Date();
       await db.Followship.create({ followerId: 1, followingId: 2 });
@@ -172,7 +171,7 @@ describe('# user request', () => {
           .get('/users/1/followings')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.status.should.equal(200);
             res.type.should.equal('text/html');
@@ -185,7 +184,7 @@ describe('# user request', () => {
           .get('/users/1/followings')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             // User3 Line is front than User2 due to sorting
             res.text
@@ -202,7 +201,7 @@ describe('# user request', () => {
           .get('/users/1/followers')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.status.should.equal(200);
             res.type.should.equal('text/html');
@@ -215,7 +214,7 @@ describe('# user request', () => {
           .get('/users/1/followers')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             // User3 Line is front than User2 due to sorting
             res.text
@@ -242,7 +241,7 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ id: 1, Followings: [] });
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'Tweet1' });
       await db.Like.create({ UserId: 1, TweetId: 1 });
     });
@@ -253,7 +252,7 @@ describe('# user request', () => {
           .get('/users/1/likes')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('Tweet1');
             return done();

@@ -84,6 +84,11 @@ router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
 // tweets GET, POST
 router.get('/tweets', authenticated, tweetsController.getTweets);
 router.post('/tweets', authenticated, tweetsController.addTweet);
+router.get(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  tweetsController.getReplyTweets
+);
 
 // POST DELETE /followships/:id
 router.post(
