@@ -29,16 +29,22 @@
   </div>
   <div class="card profile my-3">
     <li class="list-group-item border-0">
-      <strong>{{postLength userTweets}}</strong>
-      <span class="text-muted font-weight-light">Tweets</span>
+      <a href="/users/{{user.id}}/tweets">
+        <strong>{{postLength userTweets}}</strong>
+        <span class="text-muted font-weight-light">Tweets</span>
+      </a>
     </li>
     <li class="list-group-item border-0">
-      <strong>{{postLength totalFollowings}}</strong>
-      <span class="text-muted font-weight-light">Following</span>
+      <a href="/users/{{user.id}}/followings">
+        <strong>{{postLength totalFollowings}}</strong>
+        <span class="text-muted font-weight-light">Following</span>
+      </a>
     </li>
     <li class="list-group-item border-0">
-      <strong>{{postLength totalFollowers}}</strong>
-      <span class="text-muted font-weight-light">Followers</span>
+      <a href="/users/{{user.id}}/followers">
+        <strong>{{postLength totalFollowers}}</strong>
+        <span class="text-muted font-weight-light">Followers</span>
+      </a>
     </li>
     <li class="list-group-item border-0">
       <strong>{{postLength totalLikes}}</strong>
