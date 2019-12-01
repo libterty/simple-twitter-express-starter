@@ -465,13 +465,9 @@ const userController = {
                 ...f.dataValues,
                 followOrder: totalFollowers
                   .filter(i => i.dataValues)
-                  .find(item => item.followerId == f.dataValues.id).createdAt
+                  .find(item => item.followerId == f.dataValues.id).id
               }))
-              .sort(
-                (a, b) =>
-                  new Date(b.followOrder).getTime() -
-                  new Date(a.followOrder).getTime()
-              );
+              .sort((a, b) => b.followOrder - a.followOrder);
             console.log('followers', followers);
             return res.render('usersFollowers', {
               user,
@@ -542,14 +538,11 @@ const userController = {
                 ...f.dataValues,
                 followOrder: totalFollowings
                   .filter(i => i.dataValues)
-                  .find(item => item.followingId == f.dataValues.id).createdAt
+                  .find(item => item.followingId == f.dataValues.id).id
               }))
-              .sort(
-                (a, b) =>
-                  new Date(b.followOrder).getTime() -
-                  new Date(a.followOrder).getTime()
-              );
-            console.log('followers', followings);
+              .sort((a, b) => b.followOrder - a.followOrder);
+            // console.log('totalFollowings', totalFollowings);
+            console.log('followings log', followings);
             return res.render('usersFollowings', {
               user,
               localUser: res.locals.user.dataValues,
