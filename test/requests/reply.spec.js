@@ -24,7 +24,7 @@ describe('# reply request', () => {
         await db.Followship.destroy({ where: {}, truncate: true });
         await db.Like.destroy({ where: {}, truncate: true });
         // add user.introduction data if you use sideNav partial
-        await db.User.create({ id: 1, introduction: '' });
+        await db.User.create({ introduction: '' });
         await db.Tweet.create({ UserId: 1, description: 'test' });
         await db.Reply.create({
           UserId: 1,
@@ -68,7 +68,7 @@ describe('# reply request', () => {
         this.getUser = sinon
           .stub(helpers, 'getUser')
           .returns({ dataValues: { id: 1, Followings: [], LikedTweets: [] } });
-        await db.User.create({ id: 1, introduction: '' });
+        await db.User.create({ introduction: '' });
         await db.Tweet.create({ UserId: 1, description: 'test' });
         await db.Reply.create({
           UserId: 1,

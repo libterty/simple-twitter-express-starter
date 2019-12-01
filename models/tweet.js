@@ -13,11 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       likeCounts: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+      },
+      replyCounts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
       }
     },
     {}
   );
-  Tweet.associate = function(models) {
+  Tweet.associate = function (models) {
     Tweet.belongsTo(models.User);
     Tweet.hasMany(models.Reply);
     Tweet.hasMany(models.Like);

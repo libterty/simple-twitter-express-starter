@@ -50,7 +50,8 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         UserId: Math.floor(Math.random() * 3) + 1,
-        likeCounts: 0
+        likeCounts: 0,
+        replyCounts: 0
       })),
       {}
     );
