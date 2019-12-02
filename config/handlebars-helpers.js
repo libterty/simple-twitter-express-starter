@@ -46,5 +46,12 @@ module.exports = {
       // unlike
       return false;
     }
+  },
+  compare: function(a, b) {
+    if (a == b) {
+      return true;
+    } else {
+      return false;
+    }
   }
 };

@@ -1,12 +1,16 @@
 const db = require('../models');
+const Sequelize = require('sequelize');
 const User = db.User;
 const Tweet = db.Tweet;
 const Reply = db.Reply;
 const Like = db.Like;
 const Followship = db.Followship;
+const Op = Sequelize.Op;
 
 const tweetsController = {
   getTweets: async (req, res) => {
+    let isFollowed = [];
+    let isLike = [];
     try {
       const tweets = await Tweet.findAndCountAll({
         order: [['updatedAt', 'DESC']],
@@ -24,7 +28,11 @@ const tweetsController = {
           isAdmin: r.User.dataValues.isAdmin
         }
       }));
-      const users = await User.findAll({ limit: 10 });
+      const users = await User.findAll({
+        limit: 10,
+        order: [['followerCounts', 'DESC']]
+      });
+
       const usersData = await users.map(r => ({
         id: r.dataValues.id,
         name: r.dataValues.name,
@@ -32,13 +40,32 @@ const tweetsController = {
           ? r.dataValues.avatar
           : 'https://via.placeholder.com/300',
         introduction: r.dataValues.introduction || '',
-        isAdmin: r.dataValues.isAdmin
+        isAdmin: r.dataValues.isAdmin,
+        followerCounts: r.dataValues.followerCounts
       }));
+
+      // popular sidebar data
+      const followLists = res.locals.user.dataValues.Followings;
+      if (followLists) {
+        followLists.map(user => isFollowed.push(user.dataValues.id));
+      }
+
+
+
+      // get all likeTweets in array
+      if (res.locals.user.dataValues.LikedTweets) {
+        res.locals.user.dataValues.LikedTweets.map(tweet => {
+          return isLike.push(tweet.dataValues.id);
+        });
+      }
+
 
       return res.render('tweets', {
         tweets: data,
         users: usersData,
-        localUser: res.locals.user.dataValues
+        localUser: res.locals.user.dataValues,
+        isFollowed,
+        isLike
       });
     } catch (e) {
       return res.status(400).render('404');
@@ -135,9 +162,12 @@ const tweetsController = {
           followingId: currentUser
         }
       }).then(d => d);
-      const followLists = res.locals.user.dataValues.Followings;
 
-      followLists.map(user => isFollowed.push(user.dataValues.id));
+      const followLists = res.locals.user.dataValues.Followings;
+      if (followLists) {
+        followLists.map(user => isFollowed.push(user.dataValues.id));
+      }
+
 
       if (!user) {
         return res.redirect('back');
@@ -150,9 +180,12 @@ const tweetsController = {
           : (isCurrentUser = false);
       }
       // get all likeTweets in array
-      res.locals.user.dataValues.LikedTweets.map(tweet => {
-        return isLike.push(tweet.dataValues.id);
-      });
+      if (res.locals.user.dataValues.LikedTweets) {
+        res.locals.user.dataValues.LikedTweets.map(tweet => {
+          return isLike.push(tweet.dataValues.id);
+        });
+      }
+
 
       return res.render('reply', {
         tweet,
@@ -194,7 +227,6 @@ const tweetsController = {
       tweet.increment('replyCounts');
       return res.redirect('back');
     } catch (e) {
-      console.log(e);
       return res.status(400).render('404');
     }
   }

@@ -15,7 +15,14 @@ module.exports = (sequelize, DataTypes) => {
       avatar: DataTypes.STRING,
       introduction: DataTypes.TEXT,
       role: DataTypes.STRING,
-      isAdmin: DataTypes.BOOLEAN
+      isAdmin: DataTypes.BOOLEAN,
+      followerCounts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        validate: {
+          min: 0
+        }
+      }
     },
     {}
   );
