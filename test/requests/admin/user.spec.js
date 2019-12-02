@@ -17,7 +17,7 @@ describe('# Admin::User request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ user: { id: 1, isAdmin: true }, Followings: [] });
+          .returns({ id: 1, Followings: [], isAdmin: false });
         await db.User.create({ name: 'User1' });
       });
 
@@ -25,7 +25,7 @@ describe('# Admin::User request', () => {
         request(app)
           .get('/admin/tweets')
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             done();
           });
@@ -45,7 +45,7 @@ describe('# Admin::User request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ user: { id: 1, isAdmin: true }, Followings: [] });
+          .returns({ id: 1, Followings: [], isAdmin: true });
         await db.User.create({ name: 'User1' });
       });
 
@@ -53,7 +53,7 @@ describe('# Admin::User request', () => {
         request(app)
           .get('/admin/users')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('User1');
             done();
@@ -64,7 +64,6 @@ describe('# Admin::User request', () => {
         this.ensureAuthenticated.restore();
         this.getUser.restore();
         await db.User.destroy({ where: {}, truncate: true });
-        await db.Tweet.destroy({ where: {}, truncate: true });
       });
     });
   });

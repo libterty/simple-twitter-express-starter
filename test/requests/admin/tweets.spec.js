@@ -17,7 +17,7 @@ describe('# Admin::Tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [] });
+          .returns({ id: 1, Followings: [], isAdmin: false });
         await db.User.create({});
       });
 
@@ -25,7 +25,7 @@ describe('# Admin::Tweet request', () => {
         request(app)
           .get('/admin/tweets')
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             done();
           });
@@ -45,7 +45,7 @@ describe('# Admin::Tweet request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ id: 1, Followings: [], role: 'admin' });
+          .returns({ id: 1, Followings: [], isAdmin: true });
         await db.User.create({});
         await db.User.create({});
         await db.Tweet.create({ UserId: 2, description: 'Tweet1' });
@@ -55,7 +55,7 @@ describe('# Admin::Tweet request', () => {
         request(app)
           .get('/admin/tweets')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('Tweet1');
             done();
@@ -65,7 +65,7 @@ describe('# Admin::Tweet request', () => {
         request(app)
           .delete('/admin/tweets/1')
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             db.Tweet.findAll().then(tweets => {
               expect(tweets).to.be.an('array').that.is.empty;
