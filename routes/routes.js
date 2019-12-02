@@ -88,8 +88,11 @@ router.get(
   authenticated,
   tweetsController.getReplyTweets
 );
-router.post('/tweets/:tweet_id/replies', authenticated, tweetsController.addReply)
-
+router.post(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  tweetsController.addReply
+);
 
 // POST DELETE /followships/:id
 router.post(
