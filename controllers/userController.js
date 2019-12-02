@@ -130,7 +130,7 @@ const userController = {
               isFollowed.push(user.dataValues.id);
             });
           }
-
+          console.log('userTweets log', userTweets);
           return res.render('dashboard', {
             user,
             localUser: res.locals.user.dataValues,
@@ -154,9 +154,9 @@ const userController = {
     return User.findByPk(req.params.id).then(user => {
       return user
         ? res.render('usersEdit', {
-          user,
-          localUser: res.locals.user.dataValues
-        })
+            user,
+            localUser: res.locals.user.dataValues
+          })
         : res.render('404');
     });
   },
@@ -368,15 +368,18 @@ const userController = {
         .then(() => {
           User.findByPk(req.params.followingId)
             .then(user => {
-              user.increment('followerCounts')
+              user
+                .increment('followerCounts')
                 .then(() => {
                   req.flash('success_messages', '新增追蹤！！');
                   return res.redirect('back');
-                }).catch(err => {
+                })
+                .catch(err => {
                   req.flash('error_messages', err.message);
                   return res.redirect('back');
-                })
-            }).catch(err => {
+                });
+            })
+            .catch(err => {
               req.flash('error_messages', err.message);
               return res.redirect('back');
             });
@@ -413,33 +416,38 @@ const userController = {
           followerId: res.locals.user.dataValues.id,
           followingId: req.params.followingId
         }
-      }).then(followship => {
-        followship
-          .destroy()
-          .then(() => {
-            User.findByPk(req.params.followingId)
-              .then(user => {
-                user.decrement('followerCounts')
-                  .then(() => {
-                    req.flash('success_messages', '移除追蹤！！');
-                    return res.redirect('back');
-                  }).catch(err => {
-                    req.flash('error_messages', err.message);
-                    return res.redirect('back');
-                  })
-              }).catch(err => {
-                req.flash('error_messages', err.message);
-                return res.redirect('back');
-              });
-          })
-          .catch(err => {
-            req.flash('error_messages', err.message);
-            return res.redirect('back');
-          });
-      }).catch(err => {
-        req.flash('error_messages', err.message);
-        return res.redirect('back');
-      });
+      })
+        .then(followship => {
+          followship
+            .destroy()
+            .then(() => {
+              User.findByPk(req.params.followingId)
+                .then(user => {
+                  user
+                    .decrement('followerCounts')
+                    .then(() => {
+                      req.flash('success_messages', '移除追蹤！！');
+                      return res.redirect('back');
+                    })
+                    .catch(err => {
+                      req.flash('error_messages', err.message);
+                      return res.redirect('back');
+                    });
+                })
+                .catch(err => {
+                  req.flash('error_messages', err.message);
+                  return res.redirect('back');
+                });
+            })
+            .catch(err => {
+              req.flash('error_messages', err.message);
+              return res.redirect('back');
+            });
+        })
+        .catch(err => {
+          req.flash('error_messages', err.message);
+          return res.redirect('back');
+        });
     }
   },
 

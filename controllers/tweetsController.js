@@ -1,5 +1,5 @@
 const db = require('../models');
-const Sequelize = require('sequelize')
+const Sequelize = require('sequelize');
 const User = db.User;
 const Tweet = db.Tweet;
 const Reply = db.Reply;

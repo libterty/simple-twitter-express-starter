@@ -19,11 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: 'cascade',
         onUpdate: 'cascade'
-      },
+      }
     },
     {}
   );
-  Like.associate = function (models) {
+  Like.associate = function(models) {
     Like.belongsTo(models.Tweet);
     Like.belongsTo(models.User);
   };

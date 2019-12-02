@@ -25,7 +25,7 @@ describe('# Admin::User request', () => {
         request(app)
           .get('/admin/tweets')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -53,7 +53,7 @@ describe('# Admin::User request', () => {
         request(app)
           .get('/admin/users')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.text.should.include('User1');
             done();
