@@ -45,3 +45,34 @@ const adminController = {
       .catch(err => res.status(500).json(err.message))
 
   },
+
+  // 瀏覽所有 users
+  getUsers: (req, res) => {
+
+    const query = {
+      include: [
+        { model: Tweet, attributes: ['id'], include: [Like] },
+        { model: User, as: 'Followings', attributes: ['id'] },
+        { model: User, as: 'Followers', attributes: ['id'] }
+      ],
+      attributes: ['id', 'name']
+    }
+
+    User
+      .findAll(query)
+      .then(users => {
+
+        users = users.map(user => ({
+          ...user.dataValues,
+          tweetCounts: user.Tweets.length,
+          tweetLikedCounts: user.Tweets.reduce((a, c) => a + c.Likes.length, 0)
+        })
+        ).sort((a, b) => b.tweetCounts - a.tweetCounts)
+
+        return res.render('admin/users', { users })
+      })
+      .catch(err => res.status(500).json(err.message))
+  }
+}
+
+module.exports = adminController

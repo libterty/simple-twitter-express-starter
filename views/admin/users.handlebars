@@ -1,0 +1,40 @@
+<h1>Twitter 後台</h1>
+
+<div class="menu my-4">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/tweets">Tweet</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/users">User</a>
+    </li>
+  </ul>
+</div>
+
+<table class="table table-hover">
+  <thead class="thead-dark">
+    <tr class="text-center">
+      <th scope="col">#</th>
+      <th scope="col">User</th>
+      <th scope="col">tweets</th>
+      <th scope="col">followings</th>
+      <th scope="col">followers</th>
+      <th scope="col">likes</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{#each users}}
+
+      <tr class="text-center">
+        <th scope="row">{{this.id}}</th>
+        <td>{{this.name}}</td>
+        <td><span>{{tweetCounts}}</span></td>
+        <td><span>{{this.Followings.length}}</span></td>
+        <td><span>{{this.Followers.length}}</span></td>
+        <td><span>{{tweetLikedCounts}}</span></td>
+      </tr>
+
+    {{/each}}
+  </tbody>
+</table>

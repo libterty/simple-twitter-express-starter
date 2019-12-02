@@ -97,8 +97,10 @@ router.delete(
   authenticated,
   userController.removeFollowing
 );
+
 // admin
 router.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/tweets'))
 router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
 router.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweet)
+router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
 module.exports = router;
