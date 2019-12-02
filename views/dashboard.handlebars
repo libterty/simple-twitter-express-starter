@@ -19,7 +19,7 @@
             <div class="card-body inner-body">
               <a href="/tweets/{{this.id}}/replies" class="card-link inner-body-link">
                 <strong>Reply</strong>
-                <small>(2)</small>
+                <small>({{this.replyCounts}})</small>
               </a>
               {{#if (eq (isLikedTweets ../isLike this.id) false)}}
               <form action="/tweets/{{this.id}}/like" method="POST" class="inner-body-form inner-body-like">
