@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       replyCounts: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
+        validate: {
+          min: 0
+        }
       }
     },
     {}

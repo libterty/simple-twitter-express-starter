@@ -26,14 +26,19 @@
           <span class="text-muted"> ‧ {{moment this.updatedAt}}</span>
           <p class="card-text">{{this.description}}</p>
           <div class="row">
-            <a href="/tweets/{{this.id}}/replies"
-              class="mr-3 btn btn-default bg-white text-primary border-0 ">Reply(2)</a>
-            <form action="/favorite/{{this.id}}?_method=DELETE" method="POST"><button type="submit"
-                class="btn btn-default bg-white text-danger border-0"><i class="fas fa-heart"></i>Liked(2)</button>
+            <a href="/tweets/{{this.id}}/replies" class="mr-3 btn btn-default bg-white text-primary border-0 ">Reply
+              <small>({{this.replyCounts}})</small></a>
+            {{#if (eq (isLikedTweets ../isLike this.id) true)}}
+            <form action="/tweets/{{this.id}}/unlike" method="POST"><button type="submit"
+                class="btn btn-default bg-white text-danger border-0"><i class="fas fa-heart"></i>Liked
+                <small>({{this.likeCounts}})</small></button>
             </form>
-            <form action="/favorite/{{this.id}}" method="POST"><button type="submit"
-                class="btn btn-default bg-white text-danger border-0"><i class="far fa-heart"></i> Like(2)</button>
+            {{else}}
+            <form action="/tweets/{{this.id}}/like" method="POST"><button type="submit"
+                class="btn btn-default bg-white text-danger border-0"><i class="far fa-heart"></i>
+                Like<small>({{this.likeCounts}})</small></button>
             </form>
+            {{/if}}
           </div>
         </div>
       </div>
@@ -56,11 +61,16 @@
           </h5>
         </a>
         <p class="card-text mr-2 font-weight-light">{{reduceLength this.introduction}}</p>
-        <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-            type="submit" class="btn btn-outline-danger" style="border-radius: 24px!important;">Unfollow</button>
+        {{#if (eq (compare ../localUser.id this.id) false)}}
+        {{#if (eq (isFollowingUser ../isFollowed this.id) true)}}
+        <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
+            type="submit" class="btn btn-outline-danger" style="border-radius: 24px!important;">Following</button>
         </form>
-        <form action="/following/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
+        {{else}}
+        <form action="/followships/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
             class="btn btn-outline-success" style="border-radius: 24px!important;">Follow</button></form>
+        {{/if}}
+        {{/if}}
       </div>
     </div>
     {{/each}}

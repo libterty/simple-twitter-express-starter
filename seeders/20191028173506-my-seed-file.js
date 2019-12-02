@@ -16,7 +16,8 @@ module.exports = {
           updatedAt: new Date(),
           avatar: faker.image.imageUrl(),
           introduction: faker.lorem.text(),
-          role: 'Admin'
+          role: 'Admin',
+          followerCounts: 0
         },
         {
           email: 'user1@example.com',
@@ -27,7 +28,8 @@ module.exports = {
           updatedAt: new Date(),
           avatar: faker.image.imageUrl(),
           introduction: faker.lorem.text(),
-          role: 'User'
+          role: 'User',
+          followerCounts: 0
         },
         {
           email: 'user2@example.com',
@@ -38,7 +40,8 @@ module.exports = {
           updatedAt: new Date(),
           avatar: faker.image.imageUrl(),
           introduction: faker.lorem.text(),
-          role: 'User'
+          role: 'User',
+          followerCounts: 0
         }
       ],
       {}
