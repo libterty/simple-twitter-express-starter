@@ -19,7 +19,7 @@ describe('# tweet request', () => {
           .get('/tweets')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             return done();
           });
@@ -43,7 +43,7 @@ describe('# tweet request', () => {
           .get('/tweets')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.text.should.include('User1 的 Tweet1');
             res.text.should.include('User1 的 Tweet2');
@@ -80,7 +80,7 @@ describe('# tweet request', () => {
           .send('description=description')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -101,7 +101,7 @@ describe('# tweet request', () => {
     });
 
     describe('when failed without login', () => {
-      before(async () => { });
+      before(async () => {});
 
       it('will redirect index', done => {
         request(app)
@@ -109,13 +109,13 @@ describe('# tweet request', () => {
           .send('description=description')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
       });
 
-      after(async () => { });
+      after(async () => {});
     });
 
     describe('when failed without validation', () => {
@@ -136,7 +136,7 @@ describe('# tweet request', () => {
           )
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -175,7 +175,7 @@ describe('# tweet request', () => {
           .post('/tweets/1/like')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
@@ -216,7 +216,7 @@ describe('# tweet request', () => {
           .post('/tweets/1/unlike')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             done();
           });
