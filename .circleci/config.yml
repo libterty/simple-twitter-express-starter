@@ -27,6 +27,6 @@ jobs:
       
       - run: sudo apt-get install mysql-client
 
-      - run: NODE_ENV=circleCI node_modules/.bin/sequelize db:migrate
+      - run: NODE_ENV=test node_modules/.bin/sequelize db:migrate
 
-      - run: npm run circleCI
+      - run: npm test
