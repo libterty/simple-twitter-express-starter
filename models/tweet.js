@@ -13,14 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       likeCounts: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+      },
+      replyCounts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
       }
     },
     {}
   );
   Tweet.associate = function(models) {
     Tweet.belongsTo(models.User);
-    Tweet.hasMany(models.Reply);
-    Tweet.hasMany(models.Like);
+    Tweet.hasMany(models.Reply, { onDelete: 'cascade', hooks: true });
+    Tweet.hasMany(models.Like, { onDelete: 'cascade', hooks: true });
     Tweet.belongsToMany(models.User, {
       through: models.Like,
       foreignKey: 'TweetId',

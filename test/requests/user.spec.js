@@ -34,7 +34,7 @@ describe('# user request', () => {
           .get('/users/1/tweets')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.text.should.include('User1 的 Tweet');
             return done();
@@ -47,7 +47,7 @@ describe('# user request', () => {
           .get('/users/2/tweets')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.text.should.include('User2 的 Tweet');
             return done();
@@ -85,7 +85,7 @@ describe('# user request', () => {
           .get('/users/1/edit')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             return done();
           });
@@ -95,7 +95,7 @@ describe('# user request', () => {
           .get('/users/2/edit')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             return done();
           });
@@ -128,7 +128,7 @@ describe('# user request', () => {
           .send({ name: 'abc', introduction: 'Hello World!' })
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             db.User.findByPk(1).then(user => {
               user.name.should.equal('abc');
@@ -171,7 +171,7 @@ describe('# user request', () => {
           .get('/users/1/followings')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.status.should.equal(200);
             res.type.should.equal('text/html');
@@ -184,7 +184,7 @@ describe('# user request', () => {
           .get('/users/1/followings')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             // User3 Line is front than User2 due to sorting
             res.text
@@ -201,7 +201,7 @@ describe('# user request', () => {
           .get('/users/1/followers')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.status.should.equal(200);
             res.type.should.equal('text/html');
@@ -214,7 +214,7 @@ describe('# user request', () => {
           .get('/users/1/followers')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             // User3 Line is front than User2 due to sorting
             res.text
@@ -233,14 +233,14 @@ describe('# user request', () => {
     });
   });
 
-  context.skip('#likes', () => {
+  context('#likes', () => {
     before(async () => {
       this.ensureAuthenticated = sinon
         .stub(helpers, 'ensureAuthenticated')
         .returns(true);
       this.getUser = sinon
         .stub(helpers, 'getUser')
-        .returns({ id: 1, Followings: [] });
+        .returns({ dataValues: { id: 1 }, Followings: [] });
       await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'Tweet1' });
       await db.Like.create({ UserId: 1, TweetId: 1 });
@@ -252,7 +252,7 @@ describe('# user request', () => {
           .get('/users/1/likes')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function (err, res) {
+          .end(function(err, res) {
             if (err) return done(err);
             res.text.should.include('Tweet1');
             return done();

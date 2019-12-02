@@ -4,7 +4,15 @@ module.exports = (sequelize, DataTypes) => {
     'Reply',
     {
       UserId: DataTypes.INTEGER,
-      TweetId: DataTypes.INTEGER,
+      TweetId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Tweets',
+          key: 'id'
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
       comment: {
         type: DataTypes.STRING,
         notNull: true,

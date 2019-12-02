@@ -130,7 +130,7 @@ const userController = {
               isFollowed.push(user.dataValues.id);
             });
           }
-
+          console.log('userTweets log', userTweets);
           return res.render('dashboard', {
             user,
             localUser: res.locals.user.dataValues,
@@ -548,6 +548,85 @@ const userController = {
               followings,
               userTweets,
               isCurrentUser: res.locals.user.dataValues.id,
+              isFollowed,
+              currentUser,
+              totalLikes,
+              totalFollowers,
+              totalFollowings
+            });
+          });
+        });
+      } else {
+        return res.render('404');
+      }
+    });
+  },
+
+  getLikes: (req, res) => {
+    let isFollowed = [];
+    let isLike = [];
+    let currentUser = Number(req.params.id);
+
+    return User.findByPk(req.params.id).then(user => {
+      if (user) {
+        Tweet.findAll().then(async tweets => {
+          // return length
+          const totalLikes = await Like.findAll({
+            where: { UserId: req.params.id }
+          }).then(usersId => usersId);
+          // return length
+          const totalFollowings = await Followship.findAll({
+            where: { followerId: req.params.id }
+          }).then(usersId => usersId);
+          // return length
+          const totalFollowers = await Followship.findAll({
+            where: { followingId: req.params.id }
+          }).then(usersId => usersId);
+          // Check followings
+          const followLists = res.locals.user.dataValues.Followings;
+          let userTweets = [];
+          // filtering the equivalent user
+          tweets.map(tweet => {
+            if (tweet.dataValues.UserId === Number(req.params.id)) {
+              userTweets.push(tweet.dataValues);
+            }
+          });
+          // get all following Users in an array
+          if (followLists) {
+            followLists.map(user => {
+              isFollowed.push(user.dataValues.id);
+            });
+          }
+          // get all likeTweets in array
+          if (res.locals.user.dataValues.LikedTweets) {
+            res.locals.user.dataValues.LikedTweets.map(tweet =>
+              isLike.push(tweet.dataValues.id)
+            );
+          }
+          let tLikes = totalLikes.map(item => item.dataValues.TweetId);
+          Tweet.findAll({
+            where: {
+              id: {
+                [Op.in]: tLikes
+              }
+            }
+          }).then(tweets => {
+            tweets = tweets
+              .map(t => ({
+                ...t.dataValues,
+                followOrder: totalLikes
+                  .filter(i => i.dataValues)
+                  .find(item => item.TweetId === t.dataValues.id).id
+              }))
+              .sort((a, b) => b.followOrder - a.followOrder);
+
+            return res.render('usersLikes', {
+              user,
+              localUser: res.locals.user.dataValues,
+              tweets,
+              userTweets,
+              isCurrentUser: res.locals.user.dataValues.id,
+              isLike,
               isFollowed,
               currentUser,
               totalLikes,
