@@ -1,39 +1,20 @@
-version: 2.1
-general:
-  branches:
-    only:
-      - master
-      - dev
-      - hotfix
-      - test
-
-executors:
-  default_test_environment:
-    docker:
-      - image: circleci/node:10.16.3
-    working_directory: ~/repo
-
-commands:
-  default_test_commands:
-    description: "Test our application"
-    steps:
-      - run: 
-          name: Install deps 
-          command: npm install
-      - run:
-          name: Run tests
-          command: npm test
+version: 2
 jobs:
   build:
     docker:
       - image: circleci/node:10.16.3
+      - image: circleci/mysql:8.0.4
         environment:
-          NODE_ENV: test
-    working_directory: ~/repo
-
+          MYSQL_DATABASE: ac_twitter_workspace_test
+          MYSQL_ROOT_PASSWORD: 12345678
+          DATABASE_HOST: 127.0.0.1
+          DARABASE_PORT: 3306
     steps:
       # Init
       - checkout
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@latest'
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
@@ -43,19 +24,9 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: Install migration kit
-          command: npm install -g sequelize-cli
-      - run:
-          name: run local sequelize-cli migrate command
-          commmand: npx sequelize db:migrate --env test
-      - run:
-          name: run test
-          command: npm test
+      
+      - run: sudo apt-get install mysql-client
 
-workflows:
-  version: 2
+      - run: NODE_ENV=circleCI node_modules/.bin/sequelize db:migrate
 
-  test:
-    jobs:
-      test
+      - run: npm run circleCI
