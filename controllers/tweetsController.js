@@ -9,8 +9,8 @@ const Op = Sequelize.Op;
 
 const tweetsController = {
   getTweets: async (req, res) => {
-    let isFollowed = []
-    let topUserIds = new Set()
+    let isFollowed = [];
+    let isLike = [];
     try {
       const tweets = await Tweet.findAndCountAll({
         order: [['updatedAt', 'DESC']],
@@ -48,11 +48,17 @@ const tweetsController = {
       const followLists = res.locals.user.dataValues.Followings;
       followLists.map(user => isFollowed.push(user.dataValues.id));
 
+      // get all likeTweets in array
+      res.locals.user.dataValues.LikedTweets.map(tweet => {
+        return isLike.push(tweet.dataValues.id);
+      });
+
       return res.render('tweets', {
         tweets: data,
         users: usersData,
         localUser: res.locals.user.dataValues,
-        isFollowed
+        isFollowed,
+        isLike
       });
     } catch (e) {
       return res.status(400).render('404');
