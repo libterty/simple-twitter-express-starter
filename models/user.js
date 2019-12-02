@@ -15,11 +15,18 @@ module.exports = (sequelize, DataTypes) => {
       avatar: DataTypes.STRING,
       introduction: DataTypes.TEXT,
       role: DataTypes.STRING,
-      isAdmin: DataTypes.BOOLEAN
+      isAdmin: DataTypes.BOOLEAN,
+      followerCounts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        validate: {
+          min: 0
+        }
+      }
     },
     {}
   );
-  User.associate = function(models) {
+  User.associate = function (models) {
     User.hasMany(models.Tweet);
     User.hasMany(models.Reply);
     User.hasMany(models.Like);

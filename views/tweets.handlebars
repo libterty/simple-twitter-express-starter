@@ -56,11 +56,16 @@
           </h5>
         </a>
         <p class="card-text mr-2 font-weight-light">{{reduceLength this.introduction}}</p>
-        <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
-            type="submit" class="btn btn-outline-danger" style="border-radius: 24px!important;">Unfollow</button>
+        {{#if (eq (compare ../localUser.id this.id) false)}}
+        {{#if (eq (isFollowingUser ../isFollowed this.id) true)}}
+        <form action="/followships/{{this.id}}?_method=DELETE" method="POST" style="display: contents;"><button
+            type="submit" class="btn btn-outline-danger" style="border-radius: 24px!important;">Following</button>
         </form>
-        <form action="/following/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
+        {{else}}
+        <form action="/followships/{{this.id}}" method="POST" style="display: contents;"><button type="submit"
             class="btn btn-outline-success" style="border-radius: 24px!important;">Follow</button></form>
+        {{/if}}
+        {{/if}}
       </div>
     </div>
     {{/each}}

@@ -154,9 +154,9 @@ const userController = {
     return User.findByPk(req.params.id).then(user => {
       return user
         ? res.render('usersEdit', {
-            user,
-            localUser: res.locals.user.dataValues
-          })
+          user,
+          localUser: res.locals.user.dataValues
+        })
         : res.render('404');
     });
   },
@@ -366,8 +366,20 @@ const userController = {
         followingId: req.params.followingId
       })
         .then(() => {
-          req.flash('success_messages', '新增追蹤！！');
-          return res.redirect('back');
+          User.findByPk(req.params.followingId)
+            .then(user => {
+              user.increment('followerCounts')
+                .then(() => {
+                  req.flash('success_messages', '新增追蹤！！');
+                  return res.redirect('back');
+                }).catch(err => {
+                  req.flash('error_messages', err.message);
+                  return res.redirect('back');
+                })
+            }).catch(err => {
+              req.flash('error_messages', err.message);
+              return res.redirect('back');
+            });
         })
         .catch(err => {
           req.flash('error_messages', err.message);
@@ -405,13 +417,28 @@ const userController = {
         followship
           .destroy()
           .then(() => {
-            req.flash('success_messages', '移除追蹤！！');
-            return res.redirect('back');
+            User.findByPk(req.params.followingId)
+              .then(user => {
+                user.decrement('followerCounts')
+                  .then(() => {
+                    req.flash('success_messages', '移除追蹤！！');
+                    return res.redirect('back');
+                  }).catch(err => {
+                    req.flash('error_messages', err.message);
+                    return res.redirect('back');
+                  })
+              }).catch(err => {
+                req.flash('error_messages', err.message);
+                return res.redirect('back');
+              });
           })
           .catch(err => {
             req.flash('error_messages', err.message);
             return res.redirect('back');
           });
+      }).catch(err => {
+        req.flash('error_messages', err.message);
+        return res.redirect('back');
       });
     }
   },
