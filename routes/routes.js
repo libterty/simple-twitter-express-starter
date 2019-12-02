@@ -5,6 +5,7 @@ const upload = multer({ dest: 'temp/' });
 const passport = require('../config/passport');
 const userController = require('../controllers/userController.js');
 const tweetsController = require('../controllers/tweetsController.js');
+const adminController = require('../controllers/adminController.js');
 const helpers = require('../_helpers');
 
 // authentication function
@@ -30,7 +31,7 @@ const authenticatedUser = (req, res, next) => {
 const authenticatedAdmin = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
     // 因為ACC TDD的設定要改成res.locals.user...
-    if (res.locals.user.dataValues.isAdmin) {
+    if (res.locals.user.isAdmin) {
       return next();
     }
     return res.redirect('/');
@@ -96,4 +97,7 @@ router.delete(
   authenticated,
   userController.removeFollowing
 );
+// admin
+router.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/tweets'))
+router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
 module.exports = router;
