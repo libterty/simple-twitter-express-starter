@@ -46,12 +46,19 @@ const tweetsController = {
 
       // popular sidebar data
       const followLists = res.locals.user.dataValues.Followings;
-      followLists.map(user => isFollowed.push(user.dataValues.id));
+      if (followLists) {
+        followLists.map(user => isFollowed.push(user.dataValues.id));
+      }
+
+
 
       // get all likeTweets in array
-      res.locals.user.dataValues.LikedTweets.map(tweet => {
-        return isLike.push(tweet.dataValues.id);
-      });
+      if (res.locals.user.dataValues.LikedTweets) {
+        res.locals.user.dataValues.LikedTweets.map(tweet => {
+          return isLike.push(tweet.dataValues.id);
+        });
+      }
+
 
       return res.render('tweets', {
         tweets: data,
@@ -155,9 +162,12 @@ const tweetsController = {
           followingId: currentUser
         }
       }).then(d => d);
-      const followLists = res.locals.user.dataValues.Followings;
 
-      followLists.map(user => isFollowed.push(user.dataValues.id));
+      const followLists = res.locals.user.dataValues.Followings;
+      if (followLists) {
+        followLists.map(user => isFollowed.push(user.dataValues.id));
+      }
+
 
       if (!user) {
         return res.redirect('back');
@@ -170,9 +180,12 @@ const tweetsController = {
           : (isCurrentUser = false);
       }
       // get all likeTweets in array
-      res.locals.user.dataValues.LikedTweets.map(tweet => {
-        return isLike.push(tweet.dataValues.id);
-      });
+      if (res.locals.user.dataValues.LikedTweets) {
+        res.locals.user.dataValues.LikedTweets.map(tweet => {
+          return isLike.push(tweet.dataValues.id);
+        });
+      }
+
 
       return res.render('reply', {
         tweet,

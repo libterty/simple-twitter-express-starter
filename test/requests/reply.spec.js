@@ -15,7 +15,7 @@ describe('# reply request', () => {
           .stub(helpers, 'ensureAuthenticated')
           .returns(true);
         this.getUser = sinon.stub(helpers, 'getUser').returns({
-          dataValues: { id: 1, Followings: [], LikedTweets: [] }
+          dataValues: { id: 1, Followings: [] }
         });
 
         await db.User.destroy({ where: {}, truncate: true });
@@ -40,7 +40,7 @@ describe('# reply request', () => {
           .get('/tweets/1/replies')
           .set('Accept', 'application/json')
           .expect(200)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             res.text.should.include('Tweet1 的 comment');
             return done();
@@ -67,7 +67,7 @@ describe('# reply request', () => {
           .returns(true);
         this.getUser = sinon
           .stub(helpers, 'getUser')
-          .returns({ dataValues: { id: 1, Followings: [], LikedTweets: [] } });
+          .returns({ dataValues: { id: 1, Followings: [] } });
         await db.User.create({ introduction: '' });
         await db.Tweet.create({ UserId: 1, description: 'test' });
         await db.Reply.create({
@@ -82,7 +82,7 @@ describe('# reply request', () => {
           .post('/tweets/1/replies')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             return done();
           });
@@ -104,20 +104,20 @@ describe('# reply request', () => {
     });
 
     describe('POST /tweets/1/replies fail', () => {
-      before(async () => {});
+      before(async () => { });
 
       it('will redirect index', done => {
         request(app)
           .post('/tweets/1/replies')
           .set('Accept', 'application/json')
           .expect(302)
-          .end(function(err, res) {
+          .end(function (err, res) {
             if (err) return done(err);
             return done();
           });
       });
 
-      after(async () => {});
+      after(async () => { });
     });
   });
 });
