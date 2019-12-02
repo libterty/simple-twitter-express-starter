@@ -16,6 +16,9 @@ module.exports = {
   reduceLength: function(a) {
     return a.substring(0, 50);
   },
+  remainLength: function(a) {
+    return a.substring(50);
+  },
   /**
    * @param {array} tweetId
    * @param {number} tweetId

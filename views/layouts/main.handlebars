@@ -10,7 +10,12 @@
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Solway&display=swap" rel="stylesheet">
   <style>
+    * {
+      font-family: 'Solway', serif;
+    }
+
     form {
       padding-left: 0.25rem;
     }
@@ -39,7 +44,6 @@
       margin-left: 2%;
     }
 
-
     img.user-Profile-avatar {
       height: auto;
       width: 50%;
@@ -57,12 +61,11 @@
       border-radius: 50%;
     }
 
-
     textarea {
       min-width: 100%;
       max-width: 100%;
       min-height: 50px;
-      max-height: 100px;
+      max-height: 80px;
       resize: none;
     }
 
@@ -74,7 +77,7 @@
 
     .form-control {
       padding: 5px 10px;
-      font-size: 14px;
+      font-size: 16px;
       border: none;
       border-bottom: 2px solid #eee;
     }
@@ -83,13 +86,33 @@
       text-decoration: none;
     }
 
+    .profile {
+      padding: 15px;
+      margin-top: 30px;
+      box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile img {
+      width: 50%;
+      height: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      border-radius: 3px;
+      box-shadow: 0 3px 20px 11px rgba(0, 0, 0, 0.09);
+    }
+
+    .profile .top-sec {
+      margin-top: -20%;
+      margin-bottom: 5%;
+    }
+
     .inner-body {
       display: flex;
       flex-flow: row nowrap;
     }
 
     .inner-body-link {
-      margin-top: 0.14rem;
+      margin-top: 0.12rem;
     }
 
     .inner-body-form {
@@ -113,7 +136,7 @@
           {{/if}}
           {{#if localUser}}
           <span style="color: white;margin-right: 10px;">Hi, {{replace localUser.email}}</span>
-          <a href="/users/{{localUser.id}}" class="btn btn-primary" style="color: white;margin-right: 10px;"><img
+          <a href="/users/{{localUser.id}}/tweets" class="btn btn-primary" style="color: white;margin-right: 10px;"><img
               src="{{localUser.avatar}}" class="media-avatar" alt="avatar" style=" width: 30px; height: 30px;"></a>
           <a href="/logout"><button class="btn btn-primary"
               class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
@@ -125,23 +148,23 @@
   <br />
   <main role="main">
     <div class="album py-5">
-      <div class="container">
-        {{#if success_messages}}
-        <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
-          {{success_messages}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        {{/if}}
-        {{#if error_messages}}
-        <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-          {{error_messages}}
-        </div>
-        {{/if}}
+      {{#if success_messages}}
+      <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
+        {{success_messages}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      {{/if}}
+      {{#if error_messages}}
+      <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        {{error_messages}}
+      </div>
+      {{/if}}
+      <div class="container row mx-auto">
         {{{body}}}
       </div>
     </div>

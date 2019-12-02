@@ -4,7 +4,6 @@ var chai = require('chai');
 var request = require('supertest');
 var sinon = require('sinon');
 var nanoid = require('nanoid');
-var delay = require('await-delay');
 var app = require('../../app');
 var helpers = require('../../_helpers');
 var should = chai.should();
@@ -23,8 +22,8 @@ describe('# user request', () => {
       await db.User.destroy({ where: {}, truncate: true });
       await db.Tweet.destroy({ where: {}, truncate: true });
 
-      await db.User.create({});
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
+      await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet' });
       await db.Tweet.create({ UserId: 2, description: 'User2 的 Tweet' });
     });
@@ -74,8 +73,8 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ dataValues: { id: 1 }, Followings: [] });
-      await db.User.create({});
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
+      await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'User1 的 Tweet' });
       await db.Tweet.create({ UserId: 2, description: 'User2 的 Tweet' });
     });
@@ -119,7 +118,7 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ dataValues: { id: 1 }, Followings: [] });
-      await db.User.create({});
+      await db.User.create({ introduction: '' });
     });
 
     describe('successfully update', () => {
@@ -155,9 +154,9 @@ describe('# user request', () => {
       this.getUser = sinon
         .stub(helpers, 'getUser')
         .returns({ dataValues: { id: 1 }, Followings: [] });
-      await db.User.create({ name: 'User1' });
-      await db.User.create({ name: 'User2' });
-      await db.User.create({ name: 'User3' });
+      await db.User.create({ name: 'User1', introduction: '' });
+      await db.User.create({ name: 'User2', introduction: '' });
+      await db.User.create({ name: 'User3', introduction: '' });
 
       const date = new Date();
       await db.Followship.create({ followerId: 1, followingId: 2 });
@@ -234,15 +233,15 @@ describe('# user request', () => {
     });
   });
 
-  context.skip('#likes', () => {
+  context('#likes', () => {
     before(async () => {
       this.ensureAuthenticated = sinon
         .stub(helpers, 'ensureAuthenticated')
         .returns(true);
       this.getUser = sinon
         .stub(helpers, 'getUser')
-        .returns({ id: 1, Followings: [] });
-      await db.User.create({});
+        .returns({ dataValues: { id: 1 }, Followings: [] });
+      await db.User.create({ introduction: '' });
       await db.Tweet.create({ UserId: 1, description: 'Tweet1' });
       await db.Like.create({ UserId: 1, TweetId: 1 });
     });

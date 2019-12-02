@@ -81,10 +81,16 @@ router.post(
 // post like/unlike
 router.post('/tweets/:id/like', authenticated, userController.addLike);
 router.post('/tweets/:id/unlike', authenticated, userController.removeLike);
-
 // tweets GET, POST
 router.get('/tweets', authenticated, tweetsController.getTweets);
 router.post('/tweets', authenticated, tweetsController.addTweet);
+router.get(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  tweetsController.getReplyTweets
+);
+router.post('/tweets/:tweet_id/replies', authenticated, tweetsController.addReply)
+
 
 // POST DELETE /followships/:id
 router.post(
@@ -97,10 +103,13 @@ router.delete(
   authenticated,
   userController.removeFollowing
 );
+// User Likes page
+router.get('/users/:id/likes', authenticated, userController.getLikes);
 
 // admin
 router.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/tweets'))
 router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
 router.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweet)
 router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+
 module.exports = router;

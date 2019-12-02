@@ -43,20 +43,33 @@ module.exports = {
       ],
       {}
     );
-    return queryInterface.bulkInsert(
+    queryInterface.bulkInsert(
       'Tweets',
       Array.from({ length: 50 }).map(d => ({
         description: faker.lorem.words(15),
         createdAt: new Date(),
         updatedAt: new Date(),
         UserId: Math.floor(Math.random() * 3) + 1,
-        likeCounts: 0
+        likeCounts: 0,
+        replyCounts: 0
+      })),
+      {}
+    );
+    return queryInterface.bulkInsert(
+      'Replies',
+      Array.from({ length: 50 }).map(d => ({
+        comment: faker.lorem.words(15),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        TweetId: Math.floor(Math.random() * 3) + 1,
+        UserId: Math.floor(Math.random() * 3) + 1
       })),
       {}
     );
   },
   down: (queryInterface, Sequelize) => {
     queryInterface.bulkDelete('Users', null, {});
-    return queryInterface.bulkDelete('Tweets', null, {});
+    queryInterface.bulkDelete('Tweets', null, {});
+    return queryInterface.bulkDelete('Replies', null, {});
   }
 };

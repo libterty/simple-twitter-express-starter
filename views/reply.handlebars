@@ -1,0 +1,67 @@
+{{>sideNav}}
+<div class="col-lg-8 ">
+  <h3 class="my-3">Tweets</h3>
+  <div class="py-5">
+    <div class="card flex-row mb-2">
+      <div class="card-header bg-white my-auto border-0">
+        <a href="/users/{{user.id}}/tweets"><img src="{{user.avatar}}" class="media-avatar" alt="avatar"></a>
+      </div>
+      <div class="card-body float-right my-2">
+        <a href="/users/{{user.id}}/tweets">
+          <strong class="card-title">@{{user.name}}
+            {{#if user.isAdmin}}
+            <i class="fas fa-user-secret text-muted"></i>
+            {{/if}}
+          </strong>
+        </a>
+        <span class="text-muted"> ‧ {{moment tweet.updatedAt}}</span>
+        <p class="card-text">{{tweet.description}}</p>
+        <div class="row">
+          <a href="#tweet" class="mr-3 btn btn-default bg-white text-primary border-0 ">Reply
+            <small>({{tweet.replyCounts}})</small></a>
+          {{#if (eq (isLikedTweets isLike tweet.id) true)}}
+          <form action="/tweets/{{tweet.id}}/unlike" method="POST"><button type="submit"
+              class="btn btn-default bg-white text-danger border-0"><i
+                class="fas fa-heart"></i>Liked<small>({{tweet.likeCounts}})</small></button>
+          </form>
+          {{else}}
+          <form action="/tweets/{{tweet.id}}/like" method="POST"><button type="submit"
+              class="btn btn-default bg-white text-danger border-0"><i class="far fa-heart"></i>
+              Like<small>({{tweet.likeCounts}})</small></button>
+          </form>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <h3 class="my-3">Replies</h3>
+  <div class="py-5">
+    {{#each replies}}
+    <div class="card flex-row mb-2">
+      <div class="card-header bg-white my-auto border-0">
+        <a href="/users/{{this.User.id}}/tweets"><img src="{{this.User.avatar}}" class="media-avatar" alt="avatar"></a>
+      </div>
+      <div class="card-body float-right my-2">
+        <a href="/users/{{this.User.id}}/tweets">
+          <strong class="card-title">@{{this.User.name}}
+            {{#if this.User.isAdmin}}
+            <i class="fas fa-user-secret text-muted"></i>
+            {{/if}}
+          </strong>
+        </a>
+        <span class="text-muted"> ‧ {{moment this.updatedAt}}</span>
+        <p class="card-text">{{this.comment}}</p>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  <div class="mb-5">
+    <form accept-charset="UTF-8" class="" action="/tweets/{{tweet.id}}/replies" method="POST">
+      <textarea class="form-control animated fadeIn" minlength="1" maxlength="140" id="tweet"
+        placeholder="Type in your message" rows="5" name="comment" spellcheck="true"
+        oninput="countCharacters()"></textarea>
+      <h6 id="charactersRemaining" class="text-muted">140 characters remaining</h6>
+      <button class="btn btn-primary px-3 float-right my-3" type="submit">Reply</button>
+    </form>
+  </div>
+</div>
