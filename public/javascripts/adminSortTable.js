@@ -4,14 +4,11 @@ let lastSortedColumn = null;
 let tableName = '';
 
 /****************  Execute ****************/
-adminPage.addEventListener('click', function(event) {
+adminPage.addEventListener('click', function (event) {
+  const regExp = /^(thead-row-)\w+/g
   const elementId = event.target.parentElement.parentElement.id;
-  switch (elementId) {
-    case 'thead-row-tweets':
-    case 'thead-row-replies':
-    case 'thead-row-users':
-      tableName = elementId.split('-')[2];
-      break;
+  if (regExp.test(elementId)) {
+    tableName = elementId.split('-')[2];
   }
 });
 
