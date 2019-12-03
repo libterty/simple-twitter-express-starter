@@ -16,12 +16,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       replyCounts: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
+        validate: {
+          min: 0
+        }
       }
     },
     {}
   );
-  Tweet.associate = function (models) {
+  Tweet.associate = function(models) {
     Tweet.belongsTo(models.User);
     Tweet.hasMany(models.Reply, { onDelete: 'cascade', hooks: true });
     Tweet.hasMany(models.Like, { onDelete: 'cascade', hooks: true });

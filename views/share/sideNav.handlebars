@@ -7,7 +7,7 @@
       <div class="d-flex justify-content-around mb-2">
         <h2 class="card-title">{{user.name}}</h2>
         {{#if (eq isCurrentUser false)}}
-        {{#if (eq (isLikedTweets isFollowed currentUser) true)}}
+        {{#if (eq (isFollowingUser isFollowed currentUser) true)}}
         <form action="/followships/{{user.id}}?_method=DELETE" method="POST">
           <button type="submit" class="btn btn-danger ml-5">Following</button>
         </form>
@@ -54,6 +54,6 @@
     </li>
   </div>
   {{#if (eq isCurrentUser true)}}
-  <button type="button" href="#" class="btn btn-primary" rows="3">Edit Profile</button>
+  <a type="button" href="/users/{{user.id}}/edit" class="btn btn-primary" rows="3">Edit Profile</a>
   {{/if}}
 </div>

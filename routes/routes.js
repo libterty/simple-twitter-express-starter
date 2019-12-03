@@ -89,8 +89,11 @@ router.get(
   authenticated,
   tweetsController.getReplyTweets
 );
-router.post('/tweets/:tweet_id/replies', authenticated, tweetsController.addReply)
-
+router.post(
+  '/tweets/:tweet_id/replies',
+  authenticated,
+  tweetsController.addReply
+);
 
 // POST DELETE /followships/:id
 router.post(
@@ -107,9 +110,15 @@ router.delete(
 router.get('/users/:id/likes', authenticated, userController.getLikes);
 
 // admin
-router.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/tweets'))
-router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets)
-router.delete('/admin/tweets/:id', authenticatedAdmin, adminController.deleteTweet)
-router.get('/admin/users', authenticatedAdmin, adminController.getUsers)
+router.get('/admin', authenticatedAdmin, (req, res) =>
+  res.redirect('/admin/tweets')
+);
+router.get('/admin/tweets', authenticatedAdmin, adminController.getTweets);
+router.delete(
+  '/admin/tweets/:id',
+  authenticatedAdmin,
+  adminController.deleteTweet
+);
+router.get('/admin/users', authenticatedAdmin, adminController.getUsers);
 
 module.exports = router;
