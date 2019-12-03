@@ -5,6 +5,9 @@ module.exports = {
   moment: function(a) {
     return moment(a).fromNow();
   },
+  formatDate: function(date) {
+    return moment(date).format('YYYY/MM/DD');
+  },
   replace: function(a) {
     if (!a) return 'New User';
     return a.replace(/@example.com/g, '');

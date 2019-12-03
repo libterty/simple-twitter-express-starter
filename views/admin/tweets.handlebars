@@ -1,122 +1,126 @@
-<h1>Twitter 後台</h1>
+<div class="admin-page">
+  <div class="menu my-4">
+    <h1>Twitter 後台</h1>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/tweets">Tweet</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/users">User</a>
+      </li>
+    </ul>
+  </div>
 
-<div class="menu my-4">
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link active" href="/admin/tweets">Tweet</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/users">User</a>
-    </li>
-  </ul>
-</div>
-
-<table class="table table-hover">
-  <thead class="thead-dark">
-    <tr class="text-center">
-      <th scope="col">#</th>
-      <th scope="col">User</th>
-      <th scope="col">Tweet</th>
-      <th scope="col">Reply</th>
-      <th scope="col">Delete</th>
-    </tr>
-  </thead>
-
-  <tbody class="table-tweets">
-    {{#each tweets}}
-
-      <tr class="text-center">
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.User.name}}</td>
-        <td class="w-50 text-left">
-          <p>{{this.description}}</p>
-        </td>
-        <td>
-          <button class="btn btn-primary" data-toggle="modal" data-target="#show-replies-{{this.id}}">
-            {{this.Replies.length}}
-          </button>
-        </td>
-        <td>
-          <button type="submit" class="btn btn btn-outline-danger" data-toggle="modal"
-            data-target="#tweet-delete-modal">Delete</button>
-        </td>
+  <table id="table-tweets" class="table table-hover">
+    <thead class="thead-light">
+      <tr id="thead-row-tweets" class="text-center">
+        <th scope="col"><a href="javascript:sortTableColumn(0,'number')">#</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(1,'text')">User</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(2,'text')">Tweet</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(3,'number')">Reply</a></th>
+        <th scope="col">Delete</th>
       </tr>
+    </thead>
 
-      <!-- ============ delete-modal ============ -->
-      <div class="modal fade" id="tweet-delete-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content p-3">
-            <div class="modal-body">
-              <h4 class="mr-auto">Are you sure to delete this tweet?</h4>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary float-right" data-dismiss="modal">No</button>
-              <form action="/admin/tweets/{{this.id}}?_method=DELETE" method="POST">
-                <button type="submit" class="btn btn btn-outline-danger float-right">Yes</button>
-              </form>
+    <tbody>
+      {{#each tweets}}
+
+        <tr class="text-center">
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.User.name}}</td>
+          <td class="w-50 text-left">
+            <p>{{this.description}}</p>
+          </td>
+          <td>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#show-replies-{{this.id}}">
+              {{this.Replies.length}}
+            </button>
+          </td>
+          <td>
+            <button type="submit" class="btn btn btn-outline-danger" data-toggle="modal"
+              data-target="#tweet-delete-modal">Delete</button>
+          </td>
+        </tr>
+
+        <!-- ============ delete-modal ============ -->
+        <div class="modal fade" id="tweet-delete-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content p-3">
+              <div class="modal-body">
+                <h4 class="mr-auto">Are you sure to delete this tweet?</h4>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary float-right" data-dismiss="modal">No</button>
+                <form action="/admin/tweets/{{this.id}}?_method=DELETE" method="POST">
+                  <button type="submit" class="btn btn btn-outline-danger float-right">Yes</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-    {{/each}}
-  </tbody>
-</table>
+      {{/each}}
+    </tbody>
+  </table>
 
-<!-- ============ reply modal ============ -->
-{{#each tweets}}
+  <!-- ============ reply modal ============ -->
+  {{#each tweets}}
 
-  <div id="show-replies-{{this.id}}" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
+    <div id="show-replies-{{this.id}}" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
 
-        <div class="modal-header">
-          <h5 class="modal-title">{{this.description}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+          <div class="modal-header">
+            <h5 class="modal-title">{{this.description}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
 
-        <div class="modal-body">
-          <table class="table table-hover">
-            <thead class="thead-dark">
-              <tr class="text-center">
-                <th scope="col">#</th>
-                <th scope="col">User</th>
-                <th scope="col">Reply</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {{#each this.Replies}}
-
-                <tr class="text-center">
-                  <th scope="row">{{this.id}}</th>
-                  <td>{{../this.User.name}}</td>
-                  <td>
-                    <p class="text-left ">{{reduceLength this.comment}}
-                      <span class="collapse" id="admin-tweets-comment{{this.id}}">
-                        {{remainLength this.comment}}
-                      </span>
-
-                      <a data-toggle="collapse" data-target="#admin-tweets-comment{{this.id}}">...
-                        <i class="fas fa-angle-double-right"></i>
-                      </a>
-                    </p>
-                  </td>
+          <div class="modal-body">
+            <table id="table-replies" class="table table-hover">
+              <thead class="thead-light">
+                <tr id="thead-row-replies" class="text-center">
+                  <th scope="col"><a href="javascript:sortTableColumn(0,'number')">#</a></th>
+                  <th scope="col"><a href="javascript:sortTableColumn(1,'text')">User</a></th>
+                  <th scope="col"><a href="javascript:sortTableColumn(2,'text')">Reply</a></th>
+                  <th scope="col"><a href="javascript:sortTableColumn(3,'date')">Date</a></th>
                 </tr>
+              </thead>
 
-              {{/each}}
-            </tbody>
-          </table>
+              <tbody>
+                {{#each this.Replies}}
+
+                  <tr class="text-center">
+                    <th scope="row">{{this.id}}</th>
+                    <td>{{../this.User.name}}</td>
+                    <td>
+                      <p class="text-left ">{{reduceLength this.comment}}
+                        <span class="collapse" id="admin-tweets-comment{{this.id}}">
+                          {{remainLength this.comment}}
+                        </span>
+
+                        <a data-toggle="collapse" data-target="#admin-tweets-comment{{this.id}}">...
+                          <i class="fas fa-angle-double-right"></i>
+                        </a>
+                      </p>
+                    </td>
+                    <td>{{formatDate this.createdAt}}</td>
+                  </tr>
+
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+
         </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-
       </div>
     </div>
-  </div>
 
-{{/each}}
+  {{/each}}
+</div>
+<script src="/javascripts/adminSortTable.js"></script>

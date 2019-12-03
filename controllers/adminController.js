@@ -7,7 +7,7 @@ const adminController = {
     const query = {
       include: [
         { model: User, attributes: ['name'] },
-        { model: Reply, attributes: ['id', 'comment'] }
+        { model: Reply, attributes: ['id', 'comment', 'createdAt'] }
       ],
       order: [['id', 'ASC']],
       limit: 10
