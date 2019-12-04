@@ -50,15 +50,12 @@ const tweetsController = {
         followLists.map(user => isFollowed.push(user.dataValues.id));
       }
 
-
-
       // get all likeTweets in array
       if (res.locals.user.dataValues.LikedTweets) {
         res.locals.user.dataValues.LikedTweets.map(tweet => {
           return isLike.push(tweet.dataValues.id);
         });
       }
-
 
       return res.render('tweets', {
         tweets: data,
@@ -168,7 +165,6 @@ const tweetsController = {
         followLists.map(user => isFollowed.push(user.dataValues.id));
       }
 
-
       if (!user) {
         return res.redirect('back');
       }
@@ -185,7 +181,6 @@ const tweetsController = {
           return isLike.push(tweet.dataValues.id);
         });
       }
-
 
       return res.render('reply', {
         tweet,

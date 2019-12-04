@@ -617,6 +617,7 @@ const userController = {
           const totalFollowers = await Followship.findAll({
             where: { followingId: req.params.id }
           }).then(usersId => usersId);
+          const tweetUser = await User.findAll().then(users => users);
           // Check followings
           const followLists = res.locals.user.dataValues.Followings;
           let userTweets = [];
@@ -651,7 +652,13 @@ const userController = {
                 ...t.dataValues,
                 followOrder: totalLikes
                   .filter(i => i.dataValues)
-                  .find(item => item.TweetId === t.dataValues.id).id
+                  .find(item => item.TweetId === t.dataValues.id).id,
+                userName: tweetUser.filter(
+                  user => user.dataValues.id == t.dataValues.UserId
+                )[0].dataValues.name,
+                userAvatar: tweetUser.filter(
+                  user => user.dataValues.id == t.dataValues.UserId
+                )[0].dataValues.avatar
               }))
               .sort((a, b) => b.followOrder - a.followOrder);
 
