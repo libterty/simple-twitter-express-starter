@@ -23,7 +23,7 @@
               </a>
               {{#if (eq (isLikedTweets ../isLike this.id) false)}}
               <form action="/tweets/{{this.id}}/like" method="POST" class="inner-body-form inner-body-like">
-                <button type="submit" class="btn btn-sm btn-link">
+                <button type="submit" class="btn btn-sm btn-link text-danger">
                   <i class="far fa-heart"></i>
                   <strong>Like</strong>
                   <small>({{this.likeCounts}})</small>
@@ -32,7 +32,7 @@
               {{/if}}
               {{#if (eq (isLikedTweets ../isLike this.id) true)}}
               <form action="/tweets/{{this.id}}/unlike" method="POST" class="inner-body-form inner-body-unLike">
-                <button type="submit" class="btn btn-sm btn-link">
+                <button type="submit" class="btn btn-sm btn-link text-danger">
                   <i class="fas fa-heart"></i>
                   <strong>Unlike</strong>
                   <small>({{this.likeCounts}})</small>
