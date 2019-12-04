@@ -130,7 +130,7 @@ const userController = {
               isFollowed.push(user.dataValues.id);
             });
           }
-          console.log('userTweets log', userTweets);
+
           return res.render('dashboard', {
             user,
             localUser: res.locals.user.dataValues,

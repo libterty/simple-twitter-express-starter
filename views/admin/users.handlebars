@@ -1,40 +1,43 @@
-<h1>Twitter 後台</h1>
+<div class="admin-page">
+  <div class="menu my-4">
+    <h1>Twitter 後台</h1>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/tweets">Tweet</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/users">User</a>
+      </li>
+    </ul>
+  </div>
 
-<div class="menu my-4">
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link" href="/admin/tweets">Tweet</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="/admin/users">User</a>
-    </li>
-  </ul>
+  <table id="table-users" class="table table-hover">
+    <thead class="thead-light">
+      <tr id="thead-row-users" class="text-center">
+        <th scope="col"><a href="javascript:sortTableColumn(0,'number')">#</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(1,'text')">User</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(2,'text')">tweets</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(3,'number')">followings</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(4,'number')">followers</a></th>
+        <th scope="col"><a href="javascript:sortTableColumn(5,'number')">likes</a></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{#each users}}
+
+        <tr class="text-center">
+          <th scope="row">{{this.id}}</th>
+          <td>{{this.name}}</td>
+          <td><span>{{tweetCounts}}</span></td>
+          <td><span>{{this.Followings.length}}</span></td>
+          <td><span>{{this.Followers.length}}</span></td>
+          <td><span>{{tweetLikedCounts}}</span></td>
+        </tr>
+
+      {{/each}}
+    </tbody>
+  </table>
 </div>
 
-<table class="table table-hover">
-  <thead class="thead-dark">
-    <tr class="text-center">
-      <th scope="col">#</th>
-      <th scope="col">User</th>
-      <th scope="col">tweets</th>
-      <th scope="col">followings</th>
-      <th scope="col">followers</th>
-      <th scope="col">likes</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {{#each users}}
-
-      <tr class="text-center">
-        <th scope="row">{{this.id}}</th>
-        <td>{{this.name}}</td>
-        <td><span>{{tweetCounts}}</span></td>
-        <td><span>{{this.Followings.length}}</span></td>
-        <td><span>{{this.Followers.length}}</span></td>
-        <td><span>{{tweetLikedCounts}}</span></td>
-      </tr>
-
-    {{/each}}
-  </tbody>
-</table>
+<script src="/javascripts/adminSortTable.js"></script>

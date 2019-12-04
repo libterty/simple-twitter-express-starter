@@ -44,6 +44,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(methodOverride('_method'));
+app.use(express.static('public'));
 H.registerHelpers(Handlebars);
 
 // use helpers.ensureAuthenticated(req) to replace req.isAuthenticated()
