@@ -50,15 +50,12 @@ const tweetsController = {
         followLists.map(user => isFollowed.push(user.dataValues.id));
       }
 
-
-
       // get all likeTweets in array
       if (res.locals.user.dataValues.LikedTweets) {
         res.locals.user.dataValues.LikedTweets.map(tweet => {
           return isLike.push(tweet.dataValues.id);
         });
       }
-
 
       return res.render('tweets', {
         tweets: data,
@@ -73,17 +70,17 @@ const tweetsController = {
   },
   addTweet: async (req, res) => {
     const { description } = req.body;
+    if (!description) {
+      console.log('check');
+      req.flash('error_messages', '字數需大於0');
+      return res.redirect('back');
+    }
+    if (description.length > 140) {
+      req.flash('error_messages', '字數需低於140');
+      return res.redirect('back');
+    }
 
     try {
-      if (!description) {
-        req.flash('remind_messages', '字數需大於0');
-        return res.redirect('/');
-      }
-      if (description.length > 140) {
-        req.flash('remind_messages', '字數需低於140');
-        return res.redirect('/');
-      }
-
       const tweet = await Tweet.create({
         UserId: res.locals.user.dataValues.id,
         description
@@ -168,7 +165,6 @@ const tweetsController = {
         followLists.map(user => isFollowed.push(user.dataValues.id));
       }
 
-
       if (!user) {
         return res.redirect('back');
       }
@@ -185,7 +181,6 @@ const tweetsController = {
           return isLike.push(tweet.dataValues.id);
         });
       }
-
 
       return res.render('reply', {
         tweet,
