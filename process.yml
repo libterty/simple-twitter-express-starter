@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    parallelism: 4
+    shell: /bin/bash -ileo pipefail
+    docker:
+    - image: circleci/node:10.16.3
+    - image: circleci/mysql:5.7
+      environment:
+          MYSQL_ROOT_PASSWORD: 12345678
+          MYSQL_DATABASE: ac_twitter_workspace_test
+          MYSQL_USER: user
+          MYSQL_PASSWORD: passw0rd
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        - v1-dependencies-
+    - run: npm install
+    - save_cache:
+        paths:
+        - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+    - run:
+        name: Install Dockerize
+        command: |
+            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+        environment:
+            DOCKERIZE_VERSION: v0.6.0
+    - run:
+        name: Wait for MySQL to be ready
+        command: | 
+            dockerize -wait tcp://localhost:3306 -timeout 1m
+    - run:
+        name: Migrate Database
+        command: |
+          sudo apt-get install mysql-client
+    - run: npm test
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build

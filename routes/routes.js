@@ -18,7 +18,6 @@ const authenticated = (req, res, next) => {
 
 const authenticatedUser = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
-    // 因為ACC TDD的設定要改成res.locals.user...
     if (res.locals.user.dataValues.id == req.params.id) {
       return next();
     }
@@ -30,7 +29,6 @@ const authenticatedUser = (req, res, next) => {
 
 const authenticatedAdmin = (req, res, next) => {
   if (helpers.ensureAuthenticated(req)) {
-    // 因為ACC TDD的設定要改成res.locals.user...
     if (res.locals.user.isAdmin) {
       return next();
     }

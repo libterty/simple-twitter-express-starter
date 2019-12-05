@@ -56,5 +56,13 @@ module.exports = {
     } else {
       return false;
     }
+  },
+  bigger: function(a) {
+    if (a.length > 50) {
+      return true
+    } else {
+      return false
+    }
   }
+
 };

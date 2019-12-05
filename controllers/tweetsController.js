@@ -72,16 +72,17 @@ const tweetsController = {
   },
   addTweet: async (req, res) => {
     const { description } = req.body;
+    if (!description) {
+      console.log('check');
+      req.flash('error_messages', '字數需大於0');
+      return res.redirect('back');
+    }
+    if (description.length > 140) {
+      req.flash('error_messages', '字數需低於140');
+      return res.redirect('back');
+    }
 
     try {
-      if (!description) {
-        req.flash('error_messages', '字數需大於0');
-        return res.redirect('back');
-      }
-      if (description.length > 140) {
-        req.flash('error_messages', '字數需低於140');
-        return res.redirect('/');
-      }
 
       const tweet = await Tweet.create({
         UserId: res.locals.user.dataValues.id,

@@ -117,7 +117,7 @@ describe('# reply request', () => {
           });
       });
 
-      after(async () => { });
+      after(async () => {});
     });
   });
 });

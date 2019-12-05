@@ -96,3 +96,6 @@ coverage/
 temp/
 upload/
 playground
+
+# circleCI local debug
+prcoess.yml
