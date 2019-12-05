@@ -13,7 +13,9 @@ const tweetsController = {
     let isLike = [];
     try {
       const tweets = await Tweet.findAndCountAll({
-        order: [['updatedAt', 'DESC']],
+        order: [
+          ['updatedAt', 'DESC']
+        ],
         include: [User]
       });
       const data = await tweets.rows.map(r => ({
@@ -22,23 +24,23 @@ const tweetsController = {
         User: {
           id: r.User.dataValues.id,
           name: r.User.dataValues.name,
-          avatar: r.User.dataValues.avatar
-            ? r.User.dataValues.avatar
-            : 'https://via.placeholder.com/300',
+          avatar: r.User.dataValues.avatar ?
+            r.User.dataValues.avatar : 'https://via.placeholder.com/300',
           isAdmin: r.User.dataValues.isAdmin
         }
       }));
       const users = await User.findAll({
         limit: 10,
-        order: [['followerCounts', 'DESC']]
+        order: [
+          ['followerCounts', 'DESC']
+        ]
       });
 
       const usersData = await users.map(r => ({
         id: r.dataValues.id,
         name: r.dataValues.name,
-        avatar: r.dataValues.avatar
-          ? r.dataValues.avatar
-          : 'https://via.placeholder.com/300',
+        avatar: r.dataValues.avatar ?
+          r.dataValues.avatar : 'https://via.placeholder.com/300',
         introduction: r.dataValues.introduction || '',
         isAdmin: r.dataValues.isAdmin,
         followerCounts: r.dataValues.followerCounts
@@ -50,15 +52,12 @@ const tweetsController = {
         followLists.map(user => isFollowed.push(user.dataValues.id));
       }
 
-
-
       // get all likeTweets in array
       if (res.locals.user.dataValues.LikedTweets) {
         res.locals.user.dataValues.LikedTweets.map(tweet => {
           return isLike.push(tweet.dataValues.id);
         });
       }
-
 
       return res.render('tweets', {
         tweets: data,
@@ -76,11 +75,11 @@ const tweetsController = {
 
     try {
       if (!description) {
-        req.flash('remind_messages', '字數需大於0');
-        return res.redirect('/');
+        req.flash('error_messages', '字數需大於0');
+        return res.redirect('back');
       }
       if (description.length > 140) {
-        req.flash('remind_messages', '字數需低於140');
+        req.flash('error_messages', '字數需低於140');
         return res.redirect('/');
       }
 
@@ -125,9 +124,8 @@ const tweetsController = {
         User: {
           id: r.User.dataValues.id,
           name: r.User.dataValues.name,
-          avatar: r.User.dataValues.avatar
-            ? r.User.dataValues.avatar
-            : 'https://via.placeholder.com/300',
+          avatar: r.User.dataValues.avatar ?
+            r.User.dataValues.avatar : 'https://i.imgur.com/ZJIb6zp.png',
           isAdmin: r.User.dataValues.isAdmin
         },
         Tweet: {
@@ -168,16 +166,15 @@ const tweetsController = {
         followLists.map(user => isFollowed.push(user.dataValues.id));
       }
 
-
       if (!user) {
         return res.redirect('back');
       }
 
       // check if is Current User
       if (req.user) {
-        req.user.id === currentUser
-          ? (isCurrentUser = true)
-          : (isCurrentUser = false);
+        req.user.id === currentUser ?
+          (isCurrentUser = true) :
+          (isCurrentUser = false);
       }
       // get all likeTweets in array
       if (res.locals.user.dataValues.LikedTweets) {
@@ -185,7 +182,6 @@ const tweetsController = {
           return isLike.push(tweet.dataValues.id);
         });
       }
-
 
       return res.render('reply', {
         tweet,

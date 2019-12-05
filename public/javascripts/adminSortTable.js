@@ -4,8 +4,8 @@ let lastSortedColumn = null;
 let tableName = '';
 
 /****************  Execute ****************/
-adminPage.addEventListener('click', function (event) {
-  const regExp = /^(thead-row-)\w+/g
+adminPage.addEventListener('click', function(event) {
+  const regExp = /^(thead-row-)\w+/g;
   const elementId = event.target.parentElement.parentElement.id;
   if (regExp.test(elementId)) {
     tableName = elementId.split('-')[2];

@@ -96,7 +96,8 @@
       width: 50%;
       height: 50%;
       object-fit: cover;
-      border: 3px solid white;
+      border: 1px solid #e8e8e8;
+      padding: 5%;
       border-radius: 3px;
       box-shadow: 0 3px 20px 11px rgba(0, 0, 0, 0.09);
     }
@@ -136,15 +137,14 @@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           {{#if localUser.isAdmin}}
-            <a href="/admin" class="btn btn-primary" style="color: white;margin-right: 10px;">前往後台</a>
+          <a href="/admin" class="btn btn-primary" style="color: white;margin-right: 10px;">前往後台</a>
           {{/if}}
           {{#if localUser}}
-            <span style="color: white;margin-right: 10px;">Hi, {{replace localUser.email}}</span>
-            <a href="/users/{{localUser.id}}/tweets" class="btn btn-primary"
-              style="color: white;margin-right: 10px;"><img src="{{localUser.avatar}}" class="media-avatar" alt="avatar"
-                style=" width: 30px; height: 30px;"></a>
-            <a href="/logout"><button class="btn btn-primary"
-                class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
+          <span style="color: white;margin-right: 10px;">Hi, {{replace localUser.email}}</span>
+          <a href="/users/{{localUser.id}}/tweets" class="btn btn-primary" style="color: white;margin-right: 10px;"><img
+              src="{{localUser.avatar}}" class="media-avatar" alt="avatar" style=" width: 30px; height: 30px;"></a>
+          <a href="/logout"><button class="btn btn-primary"
+              class="btn btn-outline-success my-2 my-sm-0">LogOut</button></a>
           {{/if}}
         </li>
       </ul>
@@ -154,20 +154,20 @@
   <main role="main">
     <div class="album py-5">
       {{#if success_messages}}
-        <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
-          {{success_messages}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
+      <div class="alert alert-success" role="alert" style="margin: 30px 0 ;">
+        {{success_messages}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
       {{/if}}
       {{#if error_messages}}
-        <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-          {{error_messages}}
-        </div>
+      <div class="alert alert-danger" role="alert" style="margin: 30px 0 ;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        {{error_messages}}
+      </div>
       {{/if}}
       <div class="container row mx-auto">
         {{{body}}}

@@ -20,10 +20,12 @@ module.exports = {
         unique: true
       },
       avatar: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: 'https://i.imgur.com/ZJIb6zp.png'
       },
       introduction: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        defaultValue: ''
       },
       role: {
         type: Sequelize.STRING

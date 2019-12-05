@@ -1,8 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
-    'User',
-    {
+    'User', {
       email: {
         type: DataTypes.STRING,
         unique: true
@@ -12,8 +11,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true
       },
-      avatar: DataTypes.STRING,
-      introduction: DataTypes.TEXT,
+      avatar: {
+        type: DataTypes.STRING,
+        defaultValue: 'https://i.imgur.com/ZJIb6zp.png'
+      },
+      introduction: {
+        type: DataTypes.TEXT,
+        defaultValue: ''
+      },
       role: DataTypes.STRING,
       isAdmin: DataTypes.BOOLEAN,
       followerCounts: {
@@ -23,8 +28,7 @@ module.exports = (sequelize, DataTypes) => {
           min: 0
         }
       }
-    },
-    {}
+    }, {}
   );
   User.associate = function(models) {
     User.hasMany(models.Tweet);
