@@ -14,7 +14,7 @@ module.exports = {
           name: 'root',
           createdAt: new Date(),
           updatedAt: new Date(),
-          avatar: faker.image.imageUrl(),
+          avatar: 'https://i.imgur.com/ZJIb6zp.png',
           introduction: faker.lorem.text(),
           role: 'Admin',
           followerCounts: 0
@@ -26,7 +26,7 @@ module.exports = {
           name: 'user1',
           createdAt: new Date(),
           updatedAt: new Date(),
-          avatar: faker.image.imageUrl(),
+          avatar: 'https://i.imgur.com/ZJIb6zp.png',
           introduction: faker.lorem.text(),
           role: 'User',
           followerCounts: 0
@@ -38,7 +38,7 @@ module.exports = {
           name: 'user2',
           createdAt: new Date(),
           updatedAt: new Date(),
-          avatar: faker.image.imageUrl(),
+          avatar: 'https://i.imgur.com/ZJIb6zp.png',
           introduction: faker.lorem.text(),
           role: 'User',
           followerCounts: 0

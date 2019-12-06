@@ -12,8 +12,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true
       },
-      avatar: DataTypes.STRING,
-      introduction: DataTypes.TEXT,
+      avatar: {
+        type: DataTypes.STRING,
+        defaultValue: 'https://i.imgur.com/ZJIb6zp.png'
+      },
+      introduction: {
+        type: DataTypes.TEXT,
+        defaultValue: ''
+      },
       role: DataTypes.STRING,
       isAdmin: DataTypes.BOOLEAN,
       followerCounts: {

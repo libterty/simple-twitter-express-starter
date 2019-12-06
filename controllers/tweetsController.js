@@ -124,7 +124,7 @@ const tweetsController = {
           name: r.User.dataValues.name,
           avatar: r.User.dataValues.avatar
             ? r.User.dataValues.avatar
-            : 'https://via.placeholder.com/300',
+            : 'https://i.imgur.com/ZJIb6zp.png',
           isAdmin: r.User.dataValues.isAdmin
         },
         Tweet: {

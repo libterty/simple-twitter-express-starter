@@ -13,7 +13,7 @@ module.exports = {
     return a.replace(/@example.com/g, '');
   },
   postLength: function(a) {
-    if (!a) return 0;
+    if (!a || a.length === 0) return 0;
     return a.length;
   },
   reduceLength: function(a) {
@@ -52,6 +52,13 @@ module.exports = {
   },
   compare: function(a, b) {
     if (a == b) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  bigger: function(a) {
+    if (a.length > 50) {
       return true;
     } else {
       return false;
