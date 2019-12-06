@@ -13,9 +13,7 @@ const tweetsController = {
     let isLike = [];
     try {
       const tweets = await Tweet.findAndCountAll({
-        order: [
-          ['updatedAt', 'DESC']
-        ],
+        order: [['updatedAt', 'DESC']],
         include: [User]
       });
       const data = await tweets.rows.map(r => ({
@@ -24,23 +22,23 @@ const tweetsController = {
         User: {
           id: r.User.dataValues.id,
           name: r.User.dataValues.name,
-          avatar: r.User.dataValues.avatar ?
-            r.User.dataValues.avatar : 'https://via.placeholder.com/300',
+          avatar: r.User.dataValues.avatar
+            ? r.User.dataValues.avatar
+            : 'https://via.placeholder.com/300',
           isAdmin: r.User.dataValues.isAdmin
         }
       }));
       const users = await User.findAll({
         limit: 10,
-        order: [
-          ['followerCounts', 'DESC']
-        ]
+        order: [['followerCounts', 'DESC']]
       });
 
       const usersData = await users.map(r => ({
         id: r.dataValues.id,
         name: r.dataValues.name,
-        avatar: r.dataValues.avatar ?
-          r.dataValues.avatar : 'https://via.placeholder.com/300',
+        avatar: r.dataValues.avatar
+          ? r.dataValues.avatar
+          : 'https://via.placeholder.com/300',
         introduction: r.dataValues.introduction || '',
         isAdmin: r.dataValues.isAdmin,
         followerCounts: r.dataValues.followerCounts
@@ -83,7 +81,6 @@ const tweetsController = {
     }
 
     try {
-
       const tweet = await Tweet.create({
         UserId: res.locals.user.dataValues.id,
         description
@@ -125,8 +122,9 @@ const tweetsController = {
         User: {
           id: r.User.dataValues.id,
           name: r.User.dataValues.name,
-          avatar: r.User.dataValues.avatar ?
-            r.User.dataValues.avatar : 'https://i.imgur.com/ZJIb6zp.png',
+          avatar: r.User.dataValues.avatar
+            ? r.User.dataValues.avatar
+            : 'https://i.imgur.com/ZJIb6zp.png',
           isAdmin: r.User.dataValues.isAdmin
         },
         Tweet: {
@@ -173,9 +171,9 @@ const tweetsController = {
 
       // check if is Current User
       if (req.user) {
-        req.user.id === currentUser ?
-          (isCurrentUser = true) :
-          (isCurrentUser = false);
+        req.user.id === currentUser
+          ? (isCurrentUser = true)
+          : (isCurrentUser = false);
       }
       // get all likeTweets in array
       if (res.locals.user.dataValues.LikedTweets) {

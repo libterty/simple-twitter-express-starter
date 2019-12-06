@@ -6,7 +6,8 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     queryInterface.bulkInsert(
       'Users',
-      [{
+      [
+        {
           email: 'root@example.com',
           password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
           isAdmin: true,
@@ -42,7 +43,8 @@ module.exports = {
           role: 'User',
           followerCounts: 0
         }
-      ], {}
+      ],
+      {}
     );
     queryInterface.bulkInsert(
       'Tweets',
@@ -53,7 +55,8 @@ module.exports = {
         UserId: Math.floor(Math.random() * 3) + 1,
         likeCounts: 0,
         replyCounts: 0
-      })), {}
+      })),
+      {}
     );
     return queryInterface.bulkInsert(
       'Replies',
@@ -63,7 +66,8 @@ module.exports = {
         updatedAt: new Date(),
         TweetId: Math.floor(Math.random() * 3) + 1,
         UserId: Math.floor(Math.random() * 3) + 1
-      })), {}
+      })),
+      {}
     );
   },
   down: (queryInterface, Sequelize) => {

@@ -59,10 +59,9 @@ module.exports = {
   },
   bigger: function(a) {
     if (a.length > 50) {
-      return true
+      return true;
     } else {
-      return false
+      return false;
     }
   }
-
 };
