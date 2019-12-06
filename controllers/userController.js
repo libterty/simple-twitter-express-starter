@@ -108,14 +108,14 @@ const userController = {
           });
           // check if is Current User
           if (req.user) {
-            req.user.id === Number(req.params.id)
-              ? (isCurrentUser = true)
-              : (isCurrentUser = false);
+            req.user.id === Number(req.params.id) ?
+              (isCurrentUser = true) :
+              (isCurrentUser = false);
           }
           // sort with Date
           userTweets = userTweets.sort(
             (a, b) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           // get all likeTweets in array
           if (res.locals.user.dataValues.LikedTweets) {
@@ -152,12 +152,12 @@ const userController = {
   // Get /users/:id/edit頁面
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return user
-        ? res.render('usersEdit', {
-            user,
-            localUser: res.locals.user.dataValues
-          })
-        : res.render('404');
+      return user ?
+        res.render('usersEdit', {
+          user,
+          localUser: res.locals.user.dataValues
+        }) :
+        res.render('404');
     });
   },
   // Post /users/:id/edit功能
@@ -254,9 +254,9 @@ const userController = {
     } else {
       // Transaction需要處理commit加rollback確保原子性
       return Like.create({
-        UserId: res.locals.user.dataValues.id,
-        TweetId: req.params.id
-      })
+          UserId: res.locals.user.dataValues.id,
+          TweetId: req.params.id
+        })
         .then(() => {
           Tweet.findByPk(req.params.id)
             .then(tweet => {
@@ -301,11 +301,11 @@ const userController = {
     } else {
       // Transaction需要處理commit加rollback確保原子性
       return Like.findOne({
-        where: {
-          UserId: res.locals.user.dataValues.id,
-          TweetId: req.params.id
-        }
-      })
+          where: {
+            UserId: res.locals.user.dataValues.id,
+            TweetId: req.params.id
+          }
+        })
         .then(like => {
           like
             .destroy()
@@ -362,9 +362,9 @@ const userController = {
       return res.redirect('back');
     } else {
       return Followship.create({
-        followerId: res.locals.user.dataValues.id,
-        followingId: req.params.followingId
-      })
+          followerId: res.locals.user.dataValues.id,
+          followingId: req.params.followingId
+        })
         .then(() => {
           User.findByPk(req.params.followingId)
             .then(user => {
@@ -412,11 +412,11 @@ const userController = {
       return res.redirect('back');
     } else {
       return Followship.findOne({
-        where: {
-          followerId: res.locals.user.dataValues.id,
-          followingId: req.params.followingId
-        }
-      })
+          where: {
+            followerId: res.locals.user.dataValues.id,
+            followingId: req.params.followingId
+          }
+        })
         .then(followship => {
           followship
             .destroy()

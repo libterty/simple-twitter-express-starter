@@ -19,11 +19,16 @@
         {{/if}}
       </div>
       <div class="m-3">
-        <p>{{reduceLength user.introduction}}<span class="collapse" id="viewdetails3">
-            {{remainLength user.introduction}}</span> <a data-toggle="collapse" data-target="#viewdetails3">...<i
-              class="fas fa-angle-double-right"></i>
+        {{#unless (eq (postLength user.introduction) 0)}}
+        <p>{{reduceLength user.introduction}}
+          {{#if (bigger user.introduction)}}
+          <span class="collapse" id="viewdetails3">
+            {{remainLength user.introduction}}</span>
+          <a data-toggle="collapse" data-target="#viewdetails3">...<i class="fas fa-angle-double-right"></i>
           </a>
+          {{/if}}
         </p>
+        {{/unless}}
       </div>
     </div>
   </div>
@@ -54,6 +59,7 @@
     </li>
   </div>
   {{#if (eq isCurrentUser true)}}
-  <a type="button" href="/users/{{user.id}}/edit" class="btn btn-primary sideNav-userEdit-link" rows="3">Edit Profile</a>
+  <a type="button" href="/users/{{user.id}}/edit" class="btn btn-primary sideNav-userEdit-link" rows="3">Edit
+    Profile</a>
   {{/if}}
 </div>
