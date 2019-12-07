@@ -90,7 +90,7 @@ typings/
 config/config.json
 
 # Ingore code coverage
-coverage/
+# coverage/
 
 # Ingore file upload
 temp/
